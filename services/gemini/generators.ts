@@ -81,8 +81,8 @@ export const generateSpeakingTraining = async (apiKey: string, level: CEFRLevel,
      - PERSONALITIES: [${personalities}]
     
     CRITICAL:
-    1. 'negotiation.goal': Describe clearly what the player needs to achieve in this conversation (e.g., "Find out where the package is").
-    2. 'negotiation.objectives': Provide 2 simple objectives (1 Main, 1 Side).
+    1. 'negotiation.goal': Describe clearly what the player needs to achieve in this conversation (e.g., "Find out where the package is"). MUST be in GERMAN (Target Language).
+    2. 'negotiation.objectives': Provide 2 simple objectives (1 Main, 1 Side). Descriptions MUST be in GERMAN (Target Language).
 
     Historical setting (800-1900 AD).
     NO Historical Fact needed for training.`;

@@ -146,6 +146,7 @@ export const de = {
     serverBusy: "Verbindung überlastet",
     serverBusyDesc: "Das Netzwerk der Gilde ist momentan überlastet. Das Orakel braucht einen Moment.",
     returnToMain: "Zurück",
+    loadingDemo: "Lade Gastmodus...",
     reportPlaceholder: "Schreiben Sie hier auf Deutsch...",
     dispatching: "Sende Nachricht...",
     submitToMaster: "Abschicken",

@@ -75,7 +75,7 @@ const GameContent: React.FC = () => {
   const handleStartDemo = () => {
     setGameState(prev => ({ ...prev, currentPhase: GamePhase.LOADING }));
     setLoadingProgress(30);
-    setLoadingText("Loading Guest Mode...");
+    setLoadingText(t.loadingDemo || "Loading Demo...");
     setTimeout(() => {
       // Pass static audio URL for Level 1
       const audioUrl = `${import.meta.env.BASE_URL}demo-audio/demo_level1_full_text.wav`;

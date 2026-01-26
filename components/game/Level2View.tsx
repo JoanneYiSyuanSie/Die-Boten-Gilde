@@ -353,7 +353,7 @@ export const Level2View: React.FC = () => {
 
                     {/* TRAIT BADGES (NEW STRUCTURE) */}
                     {mission?.negotiation?.npcAttributes ? (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-2 mb-4 p-1">
                             {renderTraitBadge(mission.negotiation.npcAttributes.roleId)}
                             {renderTraitBadge(mission.negotiation.npcAttributes.backgroundId)}
                             {renderTraitBadge(mission.negotiation.npcAttributes.personalityId)}

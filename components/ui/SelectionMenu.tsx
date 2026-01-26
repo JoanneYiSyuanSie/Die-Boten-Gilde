@@ -68,7 +68,7 @@ export const SelectionMenu: React.FC = () => {
 
                 setPosition({
                     x: rect.left + (rect.width / 2),
-                    y: rect.top + window.scrollY - 5
+                    y: rect.top + window.scrollY - 35
                 });
             } catch (e) {
                 console.error("Selection handling error:", e);
