@@ -171,7 +171,7 @@ const GameContent: React.FC = () => {
         return true;
       } catch (e) {
         console.error(e);
-        alert("Spy failed to report.");
+        alert(t.spyFailedReport);
         setGameState(prev => ({
           ...prev,
           lastNegotiationFeedback: null // Clear loading

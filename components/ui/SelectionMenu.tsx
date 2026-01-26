@@ -3,238 +3,219 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDictionary } from '../../contexts/DictionaryContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { translations } from '../../utils/translations';
+import { getPonsLink, getDwdsLink, getLeoLink, getGodicLink } from '../../utils/dictionaryUtils';
 
 export const SelectionMenu: React.FC = () => {
-  const [position, setPosition] = useState<{ x: number, y: number } | null>(null);
-  const [selectedText, setSelectedText] = useState('');
-  const [contextText, setContextText] = useState('');
-  const [showForm, setShowForm] = useState(false);
-  
-  // Form state
-  const [notes, setNotes] = useState('');
-  const [tags, setTags] = useState('');
+    const [position, setPosition] = useState<{ x: number, y: number } | null>(null);
+    const [selectedText, setSelectedText] = useState('');
+    const [contextText, setContextText] = useState('');
+    const [showForm, setShowForm] = useState(false);
 
-  const { addWord } = useDictionary();
-  const { settings } = useSettings();
-  const t = translations[settings.language];
-  
-  const menuRef = useRef<HTMLDivElement>(null);
+    // Form state
+    const [notes, setNotes] = useState('');
+    const [tags, setTags] = useState('');
 
-  // Safe ID generator
-  const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+    const { addWord } = useDictionary();
+    const { settings } = useSettings();
+    const t = translations[settings.language];
 
-  useEffect(() => {
-    const handleSelection = (e: Event) => {
-      // If form is open, do not update selection logic at all
-      if (showForm) return;
+    const menuRef = useRef<HTMLDivElement>(null);
 
-      // If the interaction is with the menu button itself, ignore it to prevent clearing position
-      if (menuRef.current && e.target instanceof Node && menuRef.current.contains(e.target)) {
-          return;
-      }
+    // Safe ID generator
+    const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
 
-      const selection = window.getSelection();
-      
-      if (!selection || selection.isCollapsed || !selection.toString().trim()) {
+    useEffect(() => {
+        const handleSelection = (e: Event) => {
+            // If form is open, do not update selection logic at all
+            if (showForm) return;
+
+            // If the interaction is with the menu button itself, ignore it to prevent clearing position
+            if (menuRef.current && e.target instanceof Node && menuRef.current.contains(e.target)) {
+                return;
+            }
+
+            const selection = window.getSelection();
+
+            if (!selection || selection.isCollapsed || !selection.toString().trim()) {
+                setPosition(null);
+                return;
+            }
+
+            const text = selection.toString().trim();
+            // Basic validation: ignore overly long selections
+            if (text.split(' ').length > 10) {
+                setPosition(null);
+                return;
+            }
+
+            try {
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+
+                // Ensure the selection is visible on screen before showing menu
+                if (rect.width === 0 || rect.height === 0) {
+                    setPosition(null);
+                    return;
+                }
+
+                let context = text;
+                if (selection.anchorNode && selection.anchorNode.textContent) {
+                    context = selection.anchorNode.textContent.substring(0, 300); // Limit context length
+                }
+
+                setSelectedText(text);
+                setContextText(context);
+
+                setPosition({
+                    x: rect.left + (rect.width / 2),
+                    y: rect.top + window.scrollY - 10
+                });
+            } catch (e) {
+                console.error("Selection handling error:", e);
+                setPosition(null);
+            }
+        };
+
+        document.addEventListener('mouseup', handleSelection);
+        document.addEventListener('touchend', handleSelection);
+        document.addEventListener('scroll', () => {
+            if (!showForm) setPosition(null);
+        });
+
+        return () => {
+            document.removeEventListener('mouseup', handleSelection);
+            document.removeEventListener('touchend', handleSelection);
+        };
+    }, [showForm]);
+
+    const handleOpenForm = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setShowForm(true);
+        setNotes('');
+        setTags('');
+    };
+
+    const handleSave = () => {
+        try {
+            addWord({
+                id: generateId(),
+                word: selectedText,
+                context: contextText,
+                notes: notes,
+                tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
+                timestamp: Date.now()
+            });
+        } catch (e) {
+            console.error("Failed to add word:", e);
+            alert("Failed to save word. Please try again.");
+        }
+
+        // Cleanup
+        try {
+            window.getSelection()?.removeAllRanges();
+        } catch (e) { /* ignore */ }
+
         setPosition(null);
-        return;
-      }
-
-      const text = selection.toString().trim();
-      // Basic validation: ignore overly long selections
-      if (text.split(' ').length > 10) {
-          setPosition(null);
-          return;
-      }
-
-      try {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        
-        // Ensure the selection is visible on screen before showing menu
-        if (rect.width === 0 || rect.height === 0) {
-            setPosition(null);
-            return;
-        }
-
-        let context = text;
-        if (selection.anchorNode && selection.anchorNode.textContent) {
-            context = selection.anchorNode.textContent.substring(0, 100); // Limit context length
-        }
-
-        setSelectedText(text);
-        setContextText(context);
-        
-        setPosition({
-            x: rect.left + (rect.width / 2),
-            y: rect.top + window.scrollY - 10
-        });
-      } catch (e) {
-          console.error("Selection handling error:", e);
-          setPosition(null);
-      }
+        setShowForm(false);
     };
 
-    document.addEventListener('mouseup', handleSelection);
-    document.addEventListener('touchend', handleSelection);
-    document.addEventListener('scroll', () => {
-        if (!showForm) setPosition(null);
-    });
-
-    return () => {
-      document.removeEventListener('mouseup', handleSelection);
-      document.removeEventListener('touchend', handleSelection);
+    const handleCancel = () => {
+        try {
+            window.getSelection()?.removeAllRanges();
+        } catch (e) { /* ignore */ }
+        setPosition(null);
+        setShowForm(false);
     };
-  }, [showForm]);
 
-  const handleOpenForm = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setShowForm(true);
-    setNotes('');
-    setTags('');
-  };
+    // 1. If form is active, show form (regardless of position)
+    if (showForm) {
+        return (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+                <div className="bg-[#f3e5ab] p-6 rounded-lg border-4 border-[#2c1810] shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                    <h3 className="text-xl font-fantasy font-bold mb-4 text-[#8a1c1c]">{t.addToGrimoire}</h3>
 
-  const handleSave = () => {
-    try {
-        addWord({
-          id: generateId(),
-          word: selectedText,
-          context: contextText,
-          notes: notes,
-          tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-          timestamp: Date.now()
-        });
-    } catch (e) {
-        console.error("Failed to add word:", e);
-        alert("Failed to save word. Please try again.");
-    }
-    
-    // Cleanup
-    try {
-        window.getSelection()?.removeAllRanges();
-    } catch (e) { /* ignore */ }
-    
-    setPosition(null);
-    setShowForm(false);
-  };
+                    <div className="mb-4">
+                        <p className="text-xs font-bold text-[#2c1810] mb-1 uppercase tracking-wider">{t.externalDictionaries}</p>
+                        <div className="flex gap-3 flex-wrap">
+                            <a href={getDwdsLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">DWDS</a>
+                            <span className="text-gray-400 text-xs">|</span>
+                            <a href={getPonsLink(selectedText, settings.language)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">PONS</a>
+                            <span className="text-gray-400 text-xs">|</span>
+                            <a href={getLeoLink(selectedText, settings.language)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">LEO</a>
+                            <span className="text-gray-400 text-xs">|</span>
+                            <a href={getGodicLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">德語助手</a>
+                        </div>
+                    </div>
 
-  const handleCancel = () => {
-    try {
-        window.getSelection()?.removeAllRanges();
-    } catch (e) { /* ignore */ }
-    setPosition(null);
-    setShowForm(false);
-  };
+                    <div className="mb-4">
+                        <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.wordLabel}</label>
+                        <input
+                            type="text"
+                            value={selectedText}
+                            onChange={(e) => setSelectedText(e.target.value)}
+                            className="w-full p-2 bg-white border-2 border-[#2c1810] rounded font-serif font-bold text-lg text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#8a1c1c] transition-all"
+                            placeholder={t.wordPlaceholder}
+                        />
+                    </div>
 
-  // --- Dictionary Links ---
-  const getPonsLink = (word: string) => {
-    const langPair = settings.language === 'zh' ? 'deutsch-chinesisch' : 'deutsch-englisch';
-    return `https://de.pons.com/%C3%BCbersetzung/${langPair}/${encodeURIComponent(word)}`;
-  };
+                    <div className="mb-4">
+                        <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.context}</label>
+                        <div className="p-2 bg-white/40 border border-[#2c1810]/30 rounded text-sm italic text-gray-700 max-h-20 overflow-y-auto">"{contextText}"</div>
+                    </div>
 
-  const getDwdsLink = (word: string) => {
-    return `https://www.dwds.de/wb/${encodeURIComponent(word)}`;
-  };
+                    <div className="mb-4">
+                        <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.notes}</label>
+                        <textarea
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded h-24 text-sm focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]"
+                            placeholder={t.notesPlaceholder}
+                        />
+                    </div>
 
-  const getLeoLink = (word: string) => {
-      const langPair = settings.language === 'zh' ? 'chinesisch-deutsch' : 'englisch-deutsch';
-      return `https://dict.leo.org/${langPair}/${encodeURIComponent(word)}`;
-  };
+                    <div className="mb-6">
+                        <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.tags}</label>
+                        <input
+                            value={tags}
+                            onChange={(e) => setTags(e.target.value)}
+                            className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]"
+                            placeholder={t.tagsPlaceholder}
+                        />
+                    </div>
 
-  const getEudicLink = (word: string) => {
-      // Eudic / DeYuZhuShou (德語助手)
-      return `https://www.eudic.net/v4/de/de/${encodeURIComponent(word)}`;
-  };
-
-  // 1. If form is active, show form (regardless of position)
-  if (showForm) {
-      return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
-            <div className="bg-[#f3e5ab] p-6 rounded-lg border-4 border-[#2c1810] shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-                <h3 className="text-xl font-fantasy font-bold mb-4 text-[#8a1c1c]">{t.addToGrimoire}</h3>
-                
-                <div className="mb-4">
-                    <p className="text-xs font-bold text-[#2c1810] mb-1 uppercase tracking-wider">{t.externalDictionaries}</p>
-                    <div className="flex gap-3 flex-wrap">
-                        <a href={getDwdsLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">DWDS</a>
-                        <span className="text-gray-400 text-xs">|</span>
-                        <a href={getPonsLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">PONS</a>
-                        <span className="text-gray-400 text-xs">|</span>
-                        <a href={getLeoLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">LEO</a>
-                        <span className="text-gray-400 text-xs">|</span>
-                        <a href={getEudicLink(selectedText)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">德語助手</a>
+                    <div className="flex justify-end gap-2">
+                        <button onClick={handleCancel} className="px-4 py-2 text-[#2c1810] hover:bg-black/10 rounded">{t.cancel}</button>
+                        <button onClick={handleSave} className="px-4 py-2 bg-[#8a1c1c] text-[#f3e5ab] font-bold rounded shadow hover:bg-[#a62424]">{t.saveToGrimoire}</button>
                     </div>
                 </div>
-
-                <div className="mb-4">
-                    <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.wordLabel}</label>
-                    <input 
-                        type="text"
-                        value={selectedText}
-                        onChange={(e) => setSelectedText(e.target.value)}
-                        className="w-full p-2 bg-white border-2 border-[#2c1810] rounded font-serif font-bold text-lg text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#8a1c1c] transition-all"
-                        placeholder={t.wordPlaceholder}
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.context}</label>
-                    <div className="p-2 bg-white/40 border border-[#2c1810]/30 rounded text-sm italic text-gray-700 max-h-20 overflow-y-auto">"{contextText}"</div>
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.notes}</label>
-                    <textarea 
-                        value={notes} 
-                        onChange={(e) => setNotes(e.target.value)}
-                        className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded h-24 text-sm focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]" 
-                        placeholder={t.notesPlaceholder}
-                    />
-                </div>
-
-                <div className="mb-6">
-                    <label className="block text-sm font-bold text-[#2c1810] mb-1">{t.tags}</label>
-                    <input 
-                        value={tags} 
-                        onChange={(e) => setTags(e.target.value)}
-                        className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]"
-                        placeholder={t.tagsPlaceholder}
-                    />
-                </div>
-
-                <div className="flex justify-end gap-2">
-                    <button onClick={handleCancel} className="px-4 py-2 text-[#2c1810] hover:bg-black/10 rounded">{t.cancel}</button>
-                    <button onClick={handleSave} className="px-4 py-2 bg-[#8a1c1c] text-[#f3e5ab] font-bold rounded shadow hover:bg-[#a62424]">{t.saveToGrimoire}</button>
-                </div>
             </div>
-        </div>
-      );
-  }
+        );
+    }
 
-  // 2. If no position, nothing to show
-  if (!position) return null;
+    // 2. If no position, nothing to show
+    if (!position) return null;
 
-  // 3. Show the small floating button
-  return (
-    <div 
-        ref={menuRef}
-        style={{ 
-            position: 'absolute', 
-            left: position.x, 
-            top: position.y,
-            transform: 'translate(-50%, -100%)'
-        }}
-        className="z-50 pb-2 animate-bounce"
-        onMouseDown={(e) => e.preventDefault()} // Prevent button click from clearing selection
-    >
-        <button
-            onClick={handleOpenForm}
-            className="bg-[#2c1810] text-[#f3e5ab] px-3 py-1 rounded shadow-lg border border-[#f3e5ab] font-fantasy text-sm hover:bg-[#4a2e20] transition flex items-center gap-2 whitespace-nowrap"
+    // 3. Show the small floating button
+    return (
+        <div
+            ref={menuRef}
+            style={{
+                position: 'absolute',
+                left: position.x,
+                top: position.y,
+                transform: 'translate(-50%, -100%)'
+            }}
+            className="z-50 pb-2 animate-bounce"
+            onMouseDown={(e) => e.preventDefault()} // Prevent button click from clearing selection
         >
-            <span>📖 {t.addToGrimoire}</span>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#2c1810]"></div>
-        </button>
-    </div>
-  );
+            <button
+                onClick={handleOpenForm}
+                className="bg-[#2c1810] text-[#f3e5ab] px-3 py-1 rounded shadow-lg border border-[#f3e5ab] font-fantasy text-sm hover:bg-[#4a2e20] transition flex items-center gap-2 whitespace-nowrap"
+            >
+                <span>📖 {t.addToGrimoire}</span>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#2c1810]"></div>
+            </button>
+        </div>
+    );
 };

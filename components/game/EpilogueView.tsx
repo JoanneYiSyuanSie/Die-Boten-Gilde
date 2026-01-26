@@ -23,7 +23,7 @@ const calculateGrade = (trust: number, reportScore: number): string => {
 const calculateRewards = (trust: number, reportScore: number, level: CEFRLevel) => {
     const base = Math.floor((trust + reportScore) / 2);
     const grade = calculateGrade(trust, reportScore);
-    
+
     let gradeBonus = 0;
     if (grade === 'S') gradeBonus = 50;
     else if (grade === 'A') gradeBonus = 30;
@@ -48,19 +48,19 @@ export const EpilogueView: React.FC = () => {
     const [rewardPoints, setRewardPoints] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
     const hasSaved = useRef(false);
-    
+
     // We now rely on global trustScore and feedback.score updates (e.g. from Royal Pardon usage in App.tsx)
     // Local state is just for rendering the grade, but we should derive from global state directly for reactivity
-    
+
     const t = translations[settings.language];
     const isCampaign = gameMode === 'CAMPAIGN';
-    
+
     // Check if this is the Demo Mission
     const isDemo = !!mission?.negotiation?.script;
 
     // Use the snapshotted level from the mission data, fallback to settings if missing (shouldn't happen)
     const missionLevel = mission?.level || settings.targetLevel;
-    
+
     const currentReportScore = feedback?.score || 0;
     const grade = calculateGrade(trustScore, currentReportScore);
 
@@ -70,7 +70,7 @@ export const EpilogueView: React.FC = () => {
     useEffect(() => {
         const finalize = async () => {
             let imgUrl = illustrationUrl;
-            
+
             // Generate Illustration
             if (isCampaign && !illustrationUrl && !isDemo && settings.apiKey) {
                 setIsGeneratingImg(true);
@@ -143,11 +143,11 @@ export const EpilogueView: React.FC = () => {
                         </h2>
                         {isDemo && (
                             <span className="text-xs font-bold bg-yellow-200 text-yellow-800 px-2 py-1 rounded border border-yellow-400 mt-2 inline-block">
-                                DEMO MODE - No Rewards Awarded
+                                {t.demoModeNoRewards}
                             </span>
                         )}
                     </div>
-                    
+
                     <div className="flex flex-col items-center">
                         <div className="w-16 h-16 rounded-full border-4 border-dashed border-[#8a1c1c] bg-[#2c1810] flex items-center justify-center rotate-12 mb-2 relative">
                             <span className="text-3xl font-fantasy font-bold text-[#f3e5ab]">{grade}</span>
@@ -159,7 +159,7 @@ export const EpilogueView: React.FC = () => {
                         )}
                     </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 mb-8 text-center bg-black/5 p-4 rounded border border-black/10">
                     <div>
                         <div className="text-[10px] uppercase font-bold opacity-50">{t.finalTrustScore}</div>
@@ -213,7 +213,7 @@ export const EpilogueView: React.FC = () => {
                             <div className="whitespace-pre-wrap font-mono text-[10px] md:text-xs leading-loose p-4 bg-black/20 rounded">
                                 {feedback?.corrections}
                             </div>
-                            <button 
+                            <button
                                 onClick={handleSaveReportToBlackBook}
                                 disabled={isSaved}
                                 className={`absolute bottom-2 right-2 text-[10px] uppercase font-bold transition-colors ${isSaved ? 'text-green-400 cursor-default' : 'text-[#f3e5ab] opacity-50 hover:opacity-100 hover:underline'}`}

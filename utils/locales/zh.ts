@@ -50,7 +50,7 @@ export const zh = {
     blackBookTitle: "黑之書 (錯題本)",
     saveToBlackBook: "記錄至黑之書",
     savedToBlackBook: "已記錄。",
-    emptyBlackBook:"乾淨溜溜",
+    emptyBlackBook: "乾淨溜溜",
 
     // Training / Daily Life
     selectTraining: "選擇您的日常勤務",
@@ -82,6 +82,11 @@ export const zh = {
     close: "關閉",
     cancel: "取消",
     confirmExitMission: "目前的任務將會中止。確定要重新開始 Demo 模式嗎？",
+    abandonMission: "放棄任務",
+    confirmAbandon: "確定要放棄當前任務並返回大廳嗎？所有進度將會遺失。",
+    spyFailedReport: "間諜未能回報...",
+    analyzeWord: "✨ AI 分析",
+    analyzing: "分析中...",
 
     // Instructions (Titles only, content moved to content/lore.ts)
     gameInstructions: "信使指南",
@@ -105,7 +110,7 @@ export const zh = {
     decryptionSuccess: "解讀成功！",
     decryptionIncomplete: "解讀未完成，仍要繼續...",
     proceedToNegotiation: "繼續",
-    
+
     // Level 2
     phase2Title: "對話談判",
     goalLabel: "任務環境：",
@@ -117,7 +122,7 @@ export const zh = {
     send: "發送",
     endTalk: "結束對話",
     hiddenContent: "點擊顯示",
-    
+
     // Level 3
     phase3Title: "撰寫報告",
 
@@ -133,7 +138,7 @@ export const zh = {
     returnToHall: "返回大廳",
     paintingIllustration: "正在繪製插圖",
     yourReport: "您的內容",
-    
+
     // Errors/Status
     apiKeyLink: "獲取金鑰",
     apiKeyInvalidFormat: "格式錯誤。",
@@ -142,7 +147,7 @@ export const zh = {
     dispatching: "正在發送...",
     submitToMaster: "提交",
     yourOrders: "任務說明：",
-    
+
     // Historical Fact
     historicalNote: "歷史筆記",
     source: "來源",
@@ -155,5 +160,35 @@ export const zh = {
     importSuccess: "成功！",
     importError: "封印破損！",
     importSuccessMsg: "匯入成功！您的卷軸已解讀完畢。",
-    importErrorMsg: "解讀卷軸失敗："
+    importErrorMsg: "解讀卷軸失敗：",
+
+    // Level 1
+    comprehensionQuestions: "測驗提問",
+    reviewCorrections: "請複習上方的修正內容",
+
+    // Level 2
+    target: "目標",
+    showInfo: "顯示資訊",
+    hideInfo: "隱藏資訊",
+    role: "角色",
+    loadingAudio: "讀取語音...",
+    retry: "重試",
+    ready: "就緒",
+    translate: "翻譯",
+    wait: "稍候...",
+    listening: "聆聽中...",
+
+    // Level 3
+    minLength: "最短長度",
+    words: "字數",
+    writeMore: "請再多寫一點才能提交",
+    ravenFailed: "渡鴉傳信失敗，請稍後再試。",
+
+    // BlackBook
+    yourAttempt: "您的嘗試",
+    correctionAdvice: "修正建議",
+    note: "筆記",
+
+    // Epilogue
+    demoModeNoRewards: "演示模式 - 不予獎勵",
 };

@@ -18,10 +18,10 @@ export const de = {
     guestMode: "Gastmodus (Demo)",
     shop: "Handelsposten",
     buy: "Kaufen",
-    
+
     // Identity
     identityLabel: "Identität",
-    
+
     // Treasury & Points
     guildTreasury: "Handelsposten", // Shop Title
     messengerInfo: "Boten-Status", // Record Modal Tab
@@ -37,7 +37,7 @@ export const de = {
     chapterLocked: "Verschlossen",
     visitShop: "Im Handelsposten erhältlich",
     read: "Lesen",
-    
+
     // Inventory Action
     useItem: "Benutzen",
     itemNotUsableHere: "Hier nicht nutzbar",
@@ -50,7 +50,7 @@ export const de = {
     blackBookTitle: "Das Schwarze Buch",
     saveToBlackBook: "Ins Schwarze Buch eintragen",
     savedToBlackBook: "Eintrag gespeichert.",
-    emptyBlackBook:"Die Bilanz ist perfekt... vorerst.",
+    emptyBlackBook: "Die Bilanz ist perfekt... vorerst.",
 
     // Training / Daily Life
     selectTraining: "Wähle Deine Aufgabe",
@@ -82,7 +82,12 @@ export const de = {
     close: "Schließen",
     cancel: "Abbrechen",
     confirmExitMission: "Die aktuelle Mission wird abgebrochen. Neustart im Demo-Modus?",
-    
+    abandonMission: "Mission abbrechen",
+    confirmAbandon: "Möchten Sie die Mission wirklich aufgeben und zur Halle zurückkehren? Der Fortschritt geht verloren.",
+    spyFailedReport: "Spion antwortet nicht...",
+    analyzeWord: "✨ AI Analyse",
+    analyzing: "Analysiere...",
+
     // Instructions (Titles only, content moved to content/lore.ts)
     gameInstructions: "Gilden-Leitfaden",
     instructionLoreTitle: "I. Die Gilde & Die Welt",
@@ -105,7 +110,7 @@ export const de = {
     decryptionSuccess: "Verstanden!",
     decryptionIncomplete: "Unsicher. Trotzdem weiter...",
     proceedToNegotiation: "Weiter",
-    
+
     // Level 2
     phase2Title: "Gespräch",
     goalLabel: "Situationsziel:",
@@ -117,10 +122,10 @@ export const de = {
     send: "Senden",
     endTalk: "Gespräch beenden",
     hiddenContent: "Verdeckt",
-    
+
     // Level 3
     phase3Title: "Bericht verfassen",
-    
+
     // Epilogue
     missionComplete: "Aufgabe Erledigt",
     trainingComplete: "Tageswerk vollbracht",
@@ -133,7 +138,7 @@ export const de = {
     returnToHall: "Zurück zur Halle",
     paintingIllustration: "Skizze wird erstellt",
     yourReport: "Dein Text",
-    
+
     // Errors/Status
     apiKeyLink: "Schlüssel abrufen",
     apiKeyInvalidFormat: "Ungültiges Format.",
@@ -155,5 +160,35 @@ export const de = {
     importSuccess: "Erfolg!",
     importError: "Siegel gebrochen!",
     importSuccessMsg: "Import erfolgreich! Ihre Schriftrolle wurde entziffert.",
-    importErrorMsg: "Entzifferung fehlgeschlagen:"
+    importErrorMsg: "Entzifferung fehlgeschlagen:",
+
+    // Level 1
+    comprehensionQuestions: "Verständnisfragen",
+    reviewCorrections: "Überprüfen Sie die Korrekturen oben",
+
+    // Level 2
+    target: "Ziel",
+    showInfo: "Info anzeigen",
+    hideInfo: "Info ausblenden",
+    role: "Rolle",
+    loadingAudio: "Lade Audio...",
+    retry: "Wiederholen",
+    ready: "Bereit",
+    translate: "Übersetzen",
+    wait: "Warten...",
+    listening: "Zuhören...",
+
+    // Level 3
+    minLength: "Mindestlänge",
+    words: "Wörter",
+    writeMore: "Schreiben Sie mehr, um abzuschicken",
+    ravenFailed: "Der Rabe konnte den Bericht nicht überbringen. Bitte versuchen Sie es erneut.",
+
+    // BlackBook
+    yourAttempt: "Ihr Versuch",
+    correctionAdvice: "Korrektur / Hinweis",
+    note: "Notiz",
+
+    // Epilogue
+    demoModeNoRewards: "DEMO-MODUS - Keine Belohnungen",
 };

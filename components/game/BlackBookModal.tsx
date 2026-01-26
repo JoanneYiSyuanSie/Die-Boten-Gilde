@@ -8,19 +8,20 @@ import { ParchmentContainer } from '../ui/ParchmentContainer';
 import { Icons } from '../ui/Icons';
 import { FantasyButton } from '../ui/FantasyButton';
 import { WordEntry } from '../../types';
+import { getPonsLink, getDwdsLink, getLeoLink, getGodicLink } from '../../utils/dictionaryUtils';
 
 export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     const { blackBookEntries, removeFromBlackBook } = useGuild();
     const { words, removeWord, addWord, updateWord } = useDictionary();
     const { settings } = useSettings();
     const t = translations[settings.language];
-    
+
     // 'blackbook' or 'grimoire'
     const [activeTab, setActiveTab] = useState<'grimoire' | 'blackbook'>('grimoire');
-    
+
     // Manual Add Form State
     const [isAdding, setIsAdding] = useState(false);
-    
+
     // Unified Form State (for both adding and editing)
     const [formData, setFormData] = useState({
         word: '',
@@ -49,23 +50,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
     }, [words, activeFilter]);
 
     // --- Dictionary Links Helper ---
-    const getPonsLink = (word: string) => {
-        const langPair = settings.language === 'zh' ? 'deutsch-chinesisch' : 'deutsch-englisch';
-        return `https://de.pons.com/%C3%BCbersetzung/${langPair}/${encodeURIComponent(word)}`;
-    };
-
-    const getDwdsLink = (word: string) => {
-        return `https://www.dwds.de/wb/${encodeURIComponent(word)}`;
-    };
-
-    const getLeoLink = (word: string) => {
-        const langPair = settings.language === 'zh' ? 'chinesisch-deutsch' : 'englisch-deutsch';
-        return `https://dict.leo.org/${langPair}/${encodeURIComponent(word)}`;
-    };
-
-    const getGodicLink = (word: string) => {
-        return `https://www.godic.net/dicts/de/${encodeURIComponent(word)}`;
-    };
+    // Already imported from utils/dictionaryUtils
 
     // --- Actions ---
 
@@ -122,7 +107,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
     const renderWordForm = (title: string, btnLabel: string) => (
         <div className="bg-white/40 p-6 rounded-lg border border-[#2c1810]/20 animate-in slide-in-from-bottom-5">
             <h3 className="font-fantasy font-bold text-xl mb-4 text-[#8a1c1c]">{title}</h3>
-            
+
             {/* External Dictionaries Toolbar */}
             {formData.word && (
                 <div className="mb-4 bg-[#f3e5ab] p-2 rounded border border-[#2c1810]/10">
@@ -130,9 +115,9 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
                     <div className="flex gap-3 flex-wrap">
                         <a href={getDwdsLink(formData.word)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">DWDS</a>
                         <span className="text-gray-400 text-xs">|</span>
-                        <a href={getPonsLink(formData.word)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">PONS</a>
+                        <a href={getPonsLink(formData.word, settings.language)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">PONS</a>
                         <span className="text-gray-400 text-xs">|</span>
-                        <a href={getLeoLink(formData.word)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">LEO</a>
+                        <a href={getLeoLink(formData.word, settings.language)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">LEO</a>
                         <span className="text-gray-400 text-xs">|</span>
                         <a href={getGodicLink(formData.word)} target="_blank" rel="noreferrer" className="text-blue-800 underline text-xs font-bold hover:text-blue-600">德語助手</a>
                     </div>
@@ -142,52 +127,52 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <div className="space-y-4">
                 <div>
                     <label className="block text-xs font-bold uppercase text-[#2c1810] mb-1">{t.wordLabel}</label>
-                    <input 
+                    <input
                         className="w-full p-2 bg-white border-2 border-[#2c1810] rounded font-serif font-bold text-lg text-[#2c1810] focus:outline-none focus:ring-2 focus:ring-[#8a1c1c]"
                         value={formData.word}
-                        onChange={(e) => setFormData(prev => ({...prev, word: e.target.value}))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, word: e.target.value }))}
                         placeholder={t.wordPlaceholder}
                     />
                 </div>
                 <div>
                     <label className="block text-xs font-bold uppercase text-[#2c1810] mb-1">{t.context}</label>
-                    <input 
+                    <input
                         className="w-full p-2 bg-white/60 border border-[#2c1810]/30 rounded italic"
                         value={formData.context}
-                        onChange={(e) => setFormData(prev => ({...prev, context: e.target.value}))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, context: e.target.value }))}
                         placeholder={t.contextPlaceholder}
                     />
                 </div>
                 <div>
                     <label className="block text-xs font-bold uppercase text-[#2c1810] mb-1">{t.notes}</label>
-                    <textarea 
+                    <textarea
                         className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded text-sm h-24 focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]"
                         value={formData.notes}
-                        onChange={(e) => setFormData(prev => ({...prev, notes: e.target.value}))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                         placeholder={t.notesPlaceholder}
                     />
                 </div>
                 <div>
                     <label className="block text-xs font-bold uppercase text-[#2c1810] mb-1">{t.tags}</label>
-                    <input 
+                    <input
                         className="w-full p-2 bg-white border border-[#2c1810]/50 text-[#2c1810] rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#8a1c1c]"
                         value={formData.tags}
-                        onChange={(e) => setFormData(prev => ({...prev, tags: e.target.value}))}
+                        onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
                         placeholder={t.tagsPlaceholder}
                     />
                 </div>
             </div>
 
             <div className="flex gap-4 mt-6">
-                <FantasyButton 
-                    className="flex-1 py-1 text-sm" 
-                    variant="secondary" 
+                <FantasyButton
+                    className="flex-1 py-1 text-sm"
+                    variant="secondary"
                     onClick={handleCancel}
                 >
                     {t.cancel}
                 </FantasyButton>
-                <FantasyButton 
-                    className="flex-1 py-1 text-sm" 
+                <FantasyButton
+                    className="flex-1 py-1 text-sm"
                     onClick={handleSave}
                     disabled={!formData.word.trim()}
                 >
@@ -201,31 +186,31 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
         <div className="space-y-4">
             {!isAdding && !editingId && (
                 <div className="flex flex-col gap-4">
-                     {/* Action Bar: Add & Filter */}
-                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide border-b border-[#2c1810]/10 items-center">
-                         <button 
-                             onClick={startAdding}
-                             className="flex-shrink-0 px-3 py-1 bg-[#2c1810] text-[#f3e5ab] rounded text-sm font-bold flex items-center gap-1 hover:bg-black"
-                         >
-                             <span>+</span> {t.addToGrimoire}
-                         </button>
-                         <div className="w-[1px] h-6 bg-[#2c1810]/20 mx-1"></div>
-                         <button 
-                             onClick={() => setActiveFilter('ALL')}
-                             className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase border ${activeFilter === 'ALL' ? 'bg-[#8a1c1c] text-[#f3e5ab] border-[#8a1c1c]' : 'bg-transparent text-[#2c1810] border-[#2c1810]/30 hover:bg-[#2c1810]/5'}`}
-                         >
-                             ALL
-                         </button>
-                         {uniqueTags.map(tag => (
-                             <button 
-                                 key={tag}
-                                 onClick={() => setActiveFilter(tag)}
-                                 className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase border ${activeFilter === tag ? 'bg-[#8a1c1c] text-[#f3e5ab] border-[#8a1c1c]' : 'bg-transparent text-[#2c1810] border-[#2c1810]/30 hover:bg-[#2c1810]/5'}`}
-                             >
-                                 {tag}
-                             </button>
-                         ))}
-                     </div>
+                    {/* Action Bar: Add & Filter */}
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide border-b border-[#2c1810]/10 items-center">
+                        <button
+                            onClick={startAdding}
+                            className="flex-shrink-0 px-3 py-1 bg-[#2c1810] text-[#f3e5ab] rounded text-sm font-bold flex items-center gap-1 hover:bg-black"
+                        >
+                            <span>+</span> {t.addToGrimoire}
+                        </button>
+                        <div className="w-[1px] h-6 bg-[#2c1810]/20 mx-1"></div>
+                        <button
+                            onClick={() => setActiveFilter('ALL')}
+                            className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase border ${activeFilter === 'ALL' ? 'bg-[#8a1c1c] text-[#f3e5ab] border-[#8a1c1c]' : 'bg-transparent text-[#2c1810] border-[#2c1810]/30 hover:bg-[#2c1810]/5'}`}
+                        >
+                            ALL
+                        </button>
+                        {uniqueTags.map(tag => (
+                            <button
+                                key={tag}
+                                onClick={() => setActiveFilter(tag)}
+                                className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase border ${activeFilter === tag ? 'bg-[#8a1c1c] text-[#f3e5ab] border-[#8a1c1c]' : 'bg-transparent text-[#2c1810] border-[#2c1810]/30 hover:bg-[#2c1810]/5'}`}
+                            >
+                                {tag}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
 
@@ -244,7 +229,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
                             <div className="flex justify-between items-start mb-2 pr-6">
                                 <h3 className="text-lg font-bold font-fantasy text-[#2c1810]">{entry.word}</h3>
                             </div>
-                            
+
                             {/* Content */}
                             {entry.context && <p className="text-sm italic text-[#2c1810] border-l-2 border-[#8a1c1c] pl-2 mb-2">"{entry.context}"</p>}
                             {entry.notes && <p className="text-xs text-[#2c1810] bg-white/50 p-2 rounded mb-2">{entry.notes}</p>}
@@ -260,14 +245,14 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
 
                             {/* Actions Overlay */}
                             <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all bg-white/80 rounded shadow-sm">
-                                <button 
+                                <button
                                     onClick={() => startEditing(entry)}
                                     className="text-blue-800 hover:text-blue-600 p-1"
                                     title="Edit"
                                 >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => removeWord(entry.id)}
                                     className="text-gray-400 hover:text-red-800 p-1"
                                     title={t.delete}
@@ -289,22 +274,24 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
             )}
             {blackBookEntries.map(entry => (
                 <div key={entry.id} className="p-4 bg-black/5 border border-[#2c1810]/20 rounded relative group">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">Your Attempt</span>
-                            <p className="text-[#2c1810] font-mono text-sm border-l-2 border-red-800 pl-2 bg-red-50/50 py-1 whitespace-pre-wrap">{entry.original}</p>
-                        </div>
-                        <div>
-                            <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">Correction / Advice</span>
-                            <p className="text-[#2c1810] font-mono text-sm border-l-2 border-green-800 pl-2 bg-green-50/50 py-1 whitespace-pre-wrap">{entry.correction}</p>
-                        </div>
-                    </div>
-                    {entry.note && (
-                        <div className="mt-2 text-xs opacity-60 italic border-t border-black/10 pt-1">
-                            Note: {entry.note}
+                    {entry.original && (
+                        <div className="mb-2 bg-[#8a1c1c]/5 p-2 rounded border border-[#8a1c1c]/10">
+                            <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">{t.yourAttempt}</span>
+                            <span className="font-serif italic text-[#2c1810]">{entry.original}</span>
                         </div>
                     )}
-                    <button 
+                    {entry.correction && (
+                        <div className="mb-2">
+                            <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">{t.correctionAdvice}</span>
+                            <span className="font-mono text-xs text-[#2c1810] whitespace-pre-wrap">{entry.correction}</span>
+                        </div>
+                    )}
+                    {entry.note && (
+                        <div className="text-xs text-gray-500 italic mt-2 pt-2 border-t border-black/5">
+                            <span className="font-bold">{t.note}:</span> {entry.note}
+                        </div>
+                    )}
+                    <button
                         onClick={() => removeFromBlackBook(entry.id)}
                         className="absolute top-2 right-2 text-gray-400 hover:text-red-800 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
@@ -320,14 +307,14 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
             <ParchmentContainer className="max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden shadow-2xl">
                 <div className="flex justify-between items-center mb-4 border-b-2 border-[#2c1810] pb-2">
                     <div className="flex gap-4 items-end">
-                        <button 
+                        <button
                             onClick={() => { setActiveTab('grimoire'); handleCancel(); }}
                             className={`text-2xl md:text-3xl font-fantasy font-bold transition-all text-button ${activeTab === 'grimoire' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
                         >
                             {t.tabGrimoire}
                         </button>
                         <span className="text-3xl font-fantasy text-[#2c1810]/20"> </span>
-                        <button 
+                        <button
                             onClick={() => { setActiveTab('blackbook'); handleCancel(); }}
                             className={`text-2xl md:text-3xl font-fantasy font-bold transition-all text-button ${activeTab === 'blackbook' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
                         >

@@ -6,20 +6,20 @@ import { getLevelConstraints } from "./prompts";
 import { getEvaluationSchema, getReportEvaluationSchema } from "./schemas";
 
 export const evaluateNegotiation = async (
-  apiKey: string,
-  history: {role: string, text: string}[],
-  trustScore: number,
-  objectives: any[],
-  level: CEFRLevel,
-  interfaceLang: 'de' | 'zh',
-  playerIdentityPrompt?: string
+    apiKey: string,
+    history: { role: string, text: string }[],
+    trustScore: number,
+    objectives: any[],
+    level: CEFRLevel,
+    interfaceLang: 'de' | 'zh',
+    playerIdentityPrompt?: string
 ): Promise<{ npcResponse: string, trustChange: number, feedback: string, completedObjectiveIds: string[] }> => {
-  if (!apiKey) throw new Error("API Key is missing");
-  const client = new GoogleGenAI({ apiKey });
+    if (!apiKey) throw new Error("API Key is missing");
+    const client = new GoogleGenAI({ apiKey });
 
-  const constraints = getLevelConstraints(level);
+    const constraints = getLevelConstraints(level);
 
-  const prompt = `Conversation history: ${JSON.stringify(history)}.
+    const prompt = `Conversation history: ${JSON.stringify(history)}.
   Current trust: ${trustScore}/100.
   Objectives to evaluate (in German): ${JSON.stringify(objectives)}.
   ${playerIdentityPrompt ? `Player Identity: ${playerIdentityPrompt}.` : ""}
@@ -43,21 +43,21 @@ export const evaluateNegotiation = async (
   
   Linguistic feedback in ${getInterfaceLangName(interfaceLang)}. Include the corrected sentence.`;
 
-  const response = await client.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: prompt,
-    config: {
-        responseMimeType: "application/json",
-        responseSchema: getEvaluationSchema()
-    }
-  });
+    const response = await client.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: getEvaluationSchema()
+        }
+    });
 
-  return parseJSON(response.text || "{}");
+    return parseJSON(response.text || "{}");
 };
 
 export const generateHint = async (
     apiKey: string,
-    history: {role: string, text: string}[],
+    history: { role: string, text: string }[],
     interfaceLang: 'de' | 'zh'
 ): Promise<string> => {
     if (!apiKey) throw new Error("API Key is missing");
@@ -83,12 +83,12 @@ export const generateHint = async (
 export const evaluateReport = async (apiKey: string, report: string, level: CEFRLevel, interfaceLang: 'de' | 'zh'): Promise<any> => {
     if (!apiKey) throw new Error("API Key is missing");
     const client = new GoogleGenAI({ apiKey });
-    
+
     const metaLang = getInterfaceLangName(interfaceLang);
     const prompt = `Evaluate this player report: "${report}". Target Level ${level}.
     
     1. 'score': 0-100 based on grammar and completion.
-    2. 'outcome': The narrative conclusion of the story (RPG style) in ${metaLang}. What happened after the report was submitted?
+    2. 'outcome': The narrative conclusion of the story (RPG style) in GERMAN. Matches Target Level ${level}. What happened after the report was submitted?
     3. 'corrections': Linguistic feedback, grammar corrections, and style suggestions in German.`;
 
     const response = await client.models.generateContent({
