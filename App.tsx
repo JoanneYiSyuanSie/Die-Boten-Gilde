@@ -74,7 +74,7 @@ const GameContent: React.FC = () => {
     setLoadingText("Loading Guest Mode...");
     setTimeout(() => {
       // Pass static audio URL for Level 1
-      startGame(DEMO_MISSION, "/demo-audio/demo_level1_full_text.wav", 'CAMPAIGN', GamePhase.LEVEL_1, undefined);
+      startGame(DEMO_MISSION, `${import.meta.env.BASE_URL}demo-audio/demo_level1_full_text.wav`, 'CAMPAIGN', GamePhase.LEVEL_1, undefined);
       setLoadingProgress(100);
     }, 800);
   };
