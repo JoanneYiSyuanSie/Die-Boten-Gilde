@@ -1,0 +1,714 @@
+
+/* =========================================
+   BASE TRANSITIONS
+   ========================================= */
+body {
+    transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease;
+}
+
+/* Global transitions for theme-affected elements */
+.bg-\[\#f3e5ab\], .text-\[\#2c1810\], .bg-\[\#8a1c1c\], .border-\[\#2c1810\], .bg-paper-texture, .border-\[\#8a1c1c\], .border-\[\#d4c59a\],
+.audio-player-container, .audio-btn-primary, .historical-note-card, .historical-note-pin, .historical-note-title,
+.loading-bar-fill, .custom-select-trigger, .custom-select-dropdown {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   CUSTOM SELECT STYLES (THEME AWARE)
+   ========================================= */
+
+/* Default Theme (Parchment) */
+.custom-select-option:hover,
+.custom-select-option.selected {
+    background-color: #8a1c1c;
+    color: #f3e5ab;
+}
+.custom-select-option:hover .text-\[\#2c1810\],
+.custom-select-option.selected .text-\[\#2c1810\] {
+    color: #f3e5ab; /* Override ink text to light */
+}
+
+/* =========================================
+   GLOBAL OVERRIDES (SCROLLBARS & SELECTION)
+   ========================================= */
+
+/* 1. SELECTION COLORS */
+::selection {
+    background: #8a1c1c;
+    color: #ffffff;
+}
+.theme-blueprint ::selection {
+    background: #d4af37; /* Brass selection */
+    color: #000000;
+}
+.theme-forest ::selection {
+    background: #ffb300;
+    color: #0a0f05;
+}
+
+/* 2. SCROLLBARS */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Default Theme Scrollbar */
+::-webkit-scrollbar-track {
+    background: #f3e5ab;
+    border-left: 1px solid #d4c59a;
+}
+::-webkit-scrollbar-thumb {
+    background: #2c1810;
+    border-radius: 5px;
+    border: 2px solid #f3e5ab;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #8a1c1c;
+}
+
+/* Blueprint Scrollbar (Prussian Industrial) */
+.theme-blueprint ::-webkit-scrollbar-track {
+    background: #0f172a;
+    border-left: 1px solid #1e293b;
+}
+.theme-blueprint ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border: 2px solid #d4af37; /* Brass border */
+}
+.theme-blueprint ::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+    border-color: #334155;
+}
+
+/* Forest Scrollbar */
+.theme-forest ::-webkit-scrollbar-track {
+    background: #0a0f05;
+    border-left: 1px solid #1b2418;
+}
+.theme-forest ::-webkit-scrollbar-thumb {
+    background: #2e3b23;
+    border: 2px solid #558b2f;
+}
+.theme-forest ::-webkit-scrollbar-thumb:hover {
+    background: #ffca28;
+    border-color: #2e3b23;
+}
+
+/* =========================================
+   COMPONENT OVERRIDES
+   ========================================= */
+
+/* 3. HISTORICAL NOTE CARD */
+.historical-note-card {
+    background-color: #fcf5e5;
+    border-color: #d4c59a;
+    color: #2c1810;
+}
+.historical-note-pin {
+    background-color: #8a1c1c;
+    border-color: rgba(44, 24, 16, 0.3);
+}
+.historical-note-title {
+    color: #8a1c1c;
+    border-color: rgba(44, 24, 16, 0.1);
+}
+
+.theme-blueprint .historical-note-card {
+    background-color: #1e293b;
+    border-color: #d4af37;
+    color: #f1f5f9;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    border-width: 2px;
+}
+.theme-blueprint .historical-note-pin {
+    background-color: #d4af37;
+    border-color: #0f172a;
+    box-shadow: 0 0 5px #d4af37;
+}
+.theme-blueprint .historical-note-title {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.theme-forest .historical-note-card {
+    background-color: #1b2418;
+    border-color: #558b2f;
+    color: #dcedc8;
+    background-image: none;
+    border-width: 2px;
+}
+.theme-forest .historical-note-pin {
+    background-color: #ffca28;
+    border-color: #2e3b23;
+}
+.theme-forest .historical-note-title {
+    color: #ffca28;
+    border-color: rgba(255, 202, 40, 0.3);
+}
+
+/* 4. AUDIO PLAYER */
+.audio-player-container {
+    background-color: #2c1810;
+    border-color: #8a1c1c;
+}
+.audio-btn-primary {
+    background-color: #8a1c1c;
+    color: #f3e5ab;
+}
+.audio-progress-track {
+    background-color: rgba(0,0,0,0.5);
+}
+.audio-progress-fill {
+    background-color: #f3e5ab;
+}
+.audio-speed-btn {
+    color: #f3e5ab;
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* Blueprint Audio */
+.theme-blueprint .audio-player-container {
+    background-color: #0f172a;
+    border-color: #d4af37;
+}
+.theme-blueprint .audio-btn-primary {
+    background-color: #d4af37;
+    color: #0f172a;
+}
+.theme-blueprint .audio-progress-track {
+    background-color: #334155;
+}
+.theme-blueprint .audio-progress-fill {
+    background-color: #f1f5f9;
+}
+.theme-blueprint .audio-speed-btn {
+    color: #d4af37;
+}
+
+/* Forest Audio */
+.theme-forest .audio-player-container {
+    background-color: #0a0f05;
+    border-color: #ffca28;
+}
+.theme-forest .audio-btn-primary {
+    background-color: #2e3b23;
+    color: #ffca28;
+    border: 1px solid #ffca28;
+}
+.theme-forest .audio-progress-track {
+    background-color: #1b2418;
+}
+.theme-forest .audio-progress-fill {
+    background-color: #ffca28;
+}
+.theme-forest .audio-speed-btn {
+    color: #ffca28;
+}
+
+/* =========================================
+   THEME: BLUEPRINT (Prussian Industrial)
+   ========================================= */
+.theme-blueprint {
+    background-color: #132235 !important; /* Deep Prussian Blue */
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
+    background-size: 50px 50px !important;
+}
+
+/* Main Menu Titles */
+.theme-blueprint .app-title {
+    color: #f1f5f9 !important; /* Chalk White */
+    text-shadow: 2px 2px 0px #0f172a !important; 
+    font-weight: normal !important;
+}
+.theme-blueprint .app-subtitle {
+    color: #d4af37 !important; /* Antique Brass */
+    opacity: 0.9 !important;
+}
+
+/* Container Overrides */
+/* EXCLUDE .rounded-full to prevent color previews from turning square */
+.theme-blueprint .bg-\[\#f3e5ab\]:not(.rounded-full):not(.shop-header-icon-container):not(.shop-header-bar):not(.preview-dot-parchment):not(.audio-progress-fill),
+.theme-blueprint .bg-paper-texture:not(.rounded-full),
+.theme-blueprint .bg-\[\#2c1810\]\/90:not(.rounded-full),
+.theme-blueprint .custom-select-dropdown {
+    background-color: #1e293b !important; /* Dark Blue Slate */
+    background-image: url('https://www.transparenttextures.com/patterns/noise.png') !important; 
+    border: 2px solid #94a3b8 !important; /* Steel Gray Border */
+    box-shadow: 10px 10px 20px rgba(0,0,0,0.5) !important;
+    border-radius: 2px !important;
+    color: #f1f5f9 !important; 
+}
+
+/* Loading Bar Specific Override (Prussian Industrial) */
+.theme-blueprint .loading-bar-fill {
+    background-color: #d4af37 !important; /* Solid Brass */
+    border: none !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3) !important;
+}
+
+/* Fix Word Card Readability */
+.theme-blueprint .bg-white\/40 {
+    background-color: rgba(30, 41, 59, 0.7) !important; 
+    border: 1px solid #d4af37 !important;
+    color: #f1f5f9 !important;
+}
+
+/* Fix Unowned Shop Items & NPC Bubbles - DARK MODE FRIENDLY */
+.theme-blueprint .bg-white\/60 {
+    background-color: rgba(15, 23, 42, 0.8) !important; 
+    border: 1px solid #64748b !important;
+    color: #f1f5f9 !important;
+}
+
+/* Text Overrides */
+.theme-blueprint .text-\[\#2c1810\] {
+    color: #f1f5f9 !important; /* Chalk */
+}
+/* FORCE REVEAL COLOR FOR NPC TEXT */
+.theme-blueprint .text-reveal {
+    color: #f1f5f9 !important;
+    text-transform: none !important; /* Force normal case for reading German */
+}
+/* VISIBILITY FOR SIDE OBJECTIVES */
+.theme-blueprint .text-gray-500 {
+    color: rgba(241, 245, 249, 0.6) !important;
+}
+
+.theme-blueprint .text-\[\#8a1c1c\],
+.theme-blueprint .shop-category-label,
+.theme-blueprint .text-red-800,
+.theme-blueprint .text-green-800 {
+    color: #d4af37 !important; /* Brass Accents */
+    text-shadow: none !important;
+}
+
+/* Override Blue Links (Dictionary) to be Brass/Light Blue */
+.theme-blueprint .text-blue-800 {
+    color: #60a5fa !important;
+}
+
+/* Border Color Overrides */
+.theme-blueprint .border-\[\#8a1c1c\] {
+    border-color: #d4af37 !important;
+}
+.theme-blueprint .border-\[\#d4c59a\] {
+    border-color: #d4af37 !important;
+}
+
+/* Headers - SEPARATOR YES, BOX NO */
+.theme-blueprint h1, .theme-blueprint h2, .theme-blueprint h3, .theme-blueprint h4 {
+    color: #f1f5f9 !important;
+    border: none !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; 
+}
+.theme-blueprint .border-b, 
+.theme-blueprint .border-b-2 {
+    border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Button Overrides - Industrial Plates */
+/* Exclude loading-bar-fill to prevent misalignment */
+/* Exclude CustomSelect options to avoid double-styling */
+.theme-blueprint button:not(.underline):not(.text-button):not(.rounded-full):not(.preview-dot-parchment):not(.preview-dot-ink):not(.preview-dot-seal):not(.audio-btn-primary):not(.custom-select-trigger):not(.custom-select-option):not(.special-char-btn),
+.theme-blueprint .bg-\[\#8a1c1c\]:not(.rounded-full):not(.preview-dot-seal):not(.audio-btn-primary):not(.loading-bar-fill),
+.theme-blueprint .bg-\[\#2c1810\]:not(.rounded-full):not(.shop-header-bar):not(.preview-dot-ink):not(.audio-player-container),
+.theme-blueprint button.bg-red-600:not(.rounded-full) {
+    background-color: #334155 !important; /* Metal Gray */
+    background-image: none !important; 
+    border: 1px solid #94a3b8 !important; 
+    color: #d4af37 !important; /* Brass Text */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5) !important;
+    border-radius: 2px !important;
+    text-transform: uppercase;
+    font-weight: bold !important;
+}
+.theme-blueprint button:not(.underline):not(.text-button):not(.rounded-full):not(.audio-btn-primary):not(.custom-select-trigger):not(.custom-select-option):hover {
+    background-color: #475569 !important;
+    border-color: #d4af37 !important; 
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+.theme-blueprint button:disabled {
+    opacity: 0.5 !important;
+    border-color: #444 !important;
+    color: #888 !important;
+}
+
+/* Special Char Buttons in Writing View */
+.theme-blueprint button.special-char-btn,
+.theme-blueprint .font-serif.font-bold.rounded.shadow {
+    text-transform: none !important; /* Allow lowercase special chars */
+}
+
+/* Specific style for Text-Only buttons */
+.theme-blueprint button.underline,
+.theme-blueprint button.text-button {
+    color: #d4af37 !important;
+    text-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.theme-blueprint button.underline:hover,
+.theme-blueprint button.text-button:hover {
+    color: #ffffff !important;
+}
+
+/* Fix for Purchased/Owned Item Background in Shop */
+.theme-blueprint .bg-\[\#2c1810\]\/5:not(.rounded-full) {
+    background-color: rgba(15, 23, 42, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix for Purchased Stamp */
+.theme-blueprint .rotate-12.border-double {
+    border: 2px solid #d4af37 !important;
+    background-color: #1e293b !important;
+    color: #d4af37 !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 15px rgba(0,0,0,0.8) !important;
+    text-shadow: none !important;
+}
+
+/* Strict Roundness for Circular Elements */
+.theme-blueprint .rounded-full {
+    border-radius: 9999px !important;
+}
+
+/* Blueprint Tags specifically (overriding general colors) */
+.theme-blueprint .rounded-full.bg-\[\#8a1c1c\] {
+    background-color: transparent !important;
+    border: 1px solid #d4af37 !important;
+    color: #d4af37 !important;
+}
+
+/* Blueprint Action Buttons Background (Word Card Edit/Delete) */
+.theme-blueprint .bg-white\/80 {
+    background-color: #0f172a !important; 
+    border: 1px solid #d4af37 !important;
+    color: #d4af37 !important;
+}
+.theme-blueprint .bg-white\/80 button {
+    color: #d4af37 !important;
+}
+.theme-blueprint .bg-white\/80 button:hover {
+    color: #ffffff !important;
+}
+
+
+/* Input/Form Overrides - DASHED */
+.theme-blueprint input, 
+.theme-blueprint textarea, 
+.theme-blueprint select,
+.theme-blueprint .custom-select-trigger {
+    background-color: #0f172a !important; 
+    border: 1px dashed #94a3b8 !important; 
+    color: #f1f5f9 !important;
+    border-radius: 0 !important;
+    text-transform: none !important; /* Allow normal typing */
+}
+.theme-blueprint input:focus, 
+.theme-blueprint textarea:focus {
+    border-color: #d4af37 !important;
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important;
+}
+/* Blueprint Input Placeholder Visibility */
+.theme-blueprint input::placeholder,
+.theme-blueprint textarea::placeholder {
+    color: rgba(212, 175, 55, 0.5) !important;
+}
+
+/* Custom Select Options (Blueprint) */
+.theme-blueprint .custom-select-option {
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1) !important;
+    color: #f1f5f9 !important;
+}
+.theme-blueprint .custom-select-option:hover,
+.theme-blueprint .custom-select-option.selected {
+    background-color: #d4af37 !important; /* Brass Background */
+    color: #0f172a !important; /* Dark Text */
+}
+.theme-blueprint .custom-select-option:hover .text-\[\#2c1810\],
+.theme-blueprint .custom-select-option.selected .text-\[\#2c1810\] {
+    color: #0f172a !important; /* Ensure ink text becomes dark on hover */
+}
+
+
+/* -------------------------------------
+   SHOP SPECIFIC (BLUEPRINT)
+   ------------------------------------- */
+.theme-blueprint .shop-header-icon-container {
+    background-color: #334155 !important;
+    color: #d4af37 !important;
+    border: 1px solid #d4af37 !important;
+}
+.theme-blueprint .shop-header-icon {
+    color: #d4af37 !important;
+}
+.theme-blueprint .shop-item-icon-container {
+    background-color: #334155 !important;
+    border-color: #d4af37 !important;
+}
+.theme-blueprint .shop-item-icon {
+    color: #d4af37 !important;
+}
+/* Shop Title Bar Fix */
+.theme-blueprint .shop-header-bar {
+    border: none !important;
+    border-bottom: 2px solid #d4af37 !important;
+    background-color: #0f172a !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    border-radius: 0 !important;
+}
+/* VISIBLE PREVIEW DOT BORDER */
+.theme-blueprint .theme-preview-dot {
+    border-color: #d4af37 !important;
+}
+
+/* =========================================
+   THEME: BLACK FOREST (Grimm's Tales)
+   ========================================= */
+.theme-forest {
+    background-color: #0a0f05 !important;
+    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png') !important;
+}
+
+/* Main Menu Titles */
+.theme-forest .app-title {
+    color: #ffb300 !important; 
+    text-shadow: 0 4px 15px rgba(0,0,0,0.9) !important;
+}
+.theme-forest .app-subtitle {
+    color: #aed581 !important; 
+    opacity: 0.9 !important;
+}
+
+/* Container Overrides */
+.theme-forest .bg-\[\#f3e5ab\],
+.theme-forest .bg-paper-texture,
+.theme-forest .bg-\[\#2c1810\]\/90,
+.theme-forest .custom-select-dropdown {
+    background-color: #1b2418 !important;
+    background-image: url('https://www.transparenttextures.com/patterns/black-scales.png') !important;
+    border: 1px solid #3e4a36 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.5) !important;
+    color: #c5e1a5 !important;
+}
+
+/* Loading Bar Specific Override (Forest) */
+.theme-forest .loading-bar-fill {
+    background-color: #ffca28 !important; /* Amber */
+    border: none !important;
+    box-shadow: 0 0 10px rgba(255, 202, 40, 0.3) !important;
+}
+
+/* Fix Word Card Readability (was bg-white/40) */
+.theme-forest .bg-white\/40 {
+    background-color: rgba(10, 20, 10, 0.6) !important; 
+    border: 1px solid #558b2f !important;
+    color: #dcedc8 !important;
+}
+
+/* Fix Unowned Shop Items & NPC Bubbles (was bg-white/60) - DARK MODE FRIENDLY */
+.theme-forest .bg-white\/60 {
+    background-color: rgba(20, 30, 20, 0.8) !important;
+    border: 1px solid #3e4a36 !important;
+    color: #dcedc8 !important;
+}
+
+/* Text Overrides */
+.theme-forest .text-\[\#2c1810\] {
+    color: #dcedc8 !important; 
+}
+/* FORCE REVEAL COLOR FOR NPC TEXT */
+.theme-forest .text-reveal {
+    color: #dcedc8 !important;
+}
+/* VISIBILITY FOR SIDE OBJECTIVES */
+.theme-forest .text-gray-500 {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.theme-forest .text-\[\#8a1c1c\],
+.theme-forest .shop-category-label {
+    color: #ffca28 !important; 
+}
+
+/* Override Blue Links (Dictionary) */
+.theme-forest .text-blue-800 {
+    color: #aed581 !important;
+}
+
+/* Border Color Overrides */
+.theme-forest .border-\[\#8a1c1c\] {
+    border-color: #ffca28 !important;
+}
+.theme-forest .border-\[\#d4c59a\] {
+    border-color: #558b2f !important;
+}
+
+/* Headers - SEPARATOR YES, BOX NO */
+.theme-forest h1, .theme-forest h2, .theme-forest h3 {
+    color: #cda882 !important; 
+    text-shadow: 1px 1px 0px #000 !important;
+    border: none !important;
+    border-bottom: 1px solid #33691e !important;
+}
+.theme-forest .border-b, 
+.theme-forest .border-b-2 {
+    border-bottom-color: #33691e !important;
+}
+
+/* Button Overrides */
+/* EXCLUDE .loading-bar-fill to prevent misalignment */
+/* Exclude CustomSelect options to avoid double-styling */
+.theme-forest button:not(.underline):not(.text-button):not(.rounded-full):not(.preview-dot-parchment):not(.preview-dot-ink):not(.preview-dot-seal):not(.audio-btn-primary):not(.custom-select-trigger):not(.custom-select-option):not(.special-char-btn),
+.theme-forest .bg-\[\#8a1c1c\]:not(.rounded-full):not(.preview-dot-seal):not(.audio-btn-primary):not(.loading-bar-fill),
+.theme-forest .bg-\[\#2c1810\]:not(.rounded-full):not(.preview-dot-ink):not(.audio-player-container) {
+    background-color: #2e3b23 !important;
+    background-image: none !important; 
+    border: 1px solid #558b2f !important;
+    color: #ffb300 !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important;
+}
+.theme-forest button:not(.underline):not(.text-button):not(.rounded-full):not(.audio-btn-primary):not(.custom-select-trigger):not(.custom-select-option):hover {
+    background-color: #33691e !important;
+    box-shadow: 0 0 10px #ffb300 !important;
+}
+
+/* Text-Only Buttons */
+.theme-forest button.underline,
+.theme-forest button.text-button {
+    color: #81c784 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.theme-forest button.underline:hover,
+.theme-forest button.text-button:hover {
+    color: #ffb300 !important;
+}
+
+/* Forest Tags specifically */
+.theme-forest .rounded-full.bg-\[\#8a1c1c\] {
+    background-color: #2e3b23 !important;
+    border: 1px solid #558b2f !important;
+    color: #ffb300 !important;
+}
+
+/* Forest Action Buttons Background */
+.theme-forest .bg-white\/80 {
+    background-color: #0f140a !important;
+    border: 1px solid #33691e !important;
+    color: #aed581 !important;
+}
+.theme-forest .bg-white\/80 button {
+    color: #aed581 !important;
+}
+.theme-forest .bg-white\/80 button:hover {
+    color: #ffb300 !important;
+}
+
+/* Fix for Purchased/Owned Item Background */
+.theme-forest .bg-\[\#2c1810\]\/5:not(.rounded-full) {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #3e4a36 !important;
+}
+
+/* Fix for Purchased Stamp */
+.theme-forest .rotate-12.border-double {
+    border: 2px solid #ffb300 !important;
+    background-color: #2e3b23 !important;
+    color: #ffb300 !important;
+    opacity: 1 !important;
+    box-shadow: 0 0 15px rgba(0,0,0,0.8) !important;
+    text-shadow: 1px 1px 0 #000 !important;
+}
+
+/* Input/Form Overrides */
+.theme-forest input, 
+.theme-forest textarea, 
+.theme-forest select,
+.theme-forest .custom-select-trigger {
+    background-color: #0f140a !important;
+    border: 1px solid #33691e !important;
+    color: #dcedc8 !important;
+}
+.theme-forest input:focus, 
+.theme-forest textarea:focus {
+    border-color: #ffca28 !important;
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(255, 202, 40, 0.2) !important;
+}
+/* Forest Input Placeholder Visibility */
+.theme-forest input::placeholder,
+.theme-forest textarea::placeholder {
+    color: rgba(255, 202, 40, 0.5) !important;
+}
+
+/* Custom Select Options (Forest) */
+.theme-forest .custom-select-option {
+    border-bottom: 1px solid #3e4a36 !important;
+    color: #dcedc8 !important;
+}
+.theme-forest .custom-select-option:hover,
+.theme-forest .custom-select-option.selected {
+    background-color: #ffca28 !important;
+    color: #0a0f05 !important;
+}
+.theme-forest .custom-select-option:hover .text-\[\#2c1810\],
+.theme-forest .custom-select-option.selected .text-\[\#2c1810\] {
+    color: #0a0f05 !important;
+}
+
+/* -------------------------------------
+   SHOP SPECIFIC ICONS (FOREST)
+   ------------------------------------- */
+.theme-forest .shop-header-icon-container {
+    background-color: #2e3b23 !important;
+    color: #ffb300 !important;
+    border: 1px solid #558b2f !important;
+}
+.theme-forest .shop-header-icon {
+    color: #ffb300 !important;
+}
+.theme-forest .shop-item-icon-container {
+    background-color: #2e3b23 !important;
+    border-color: #558b2f !important;
+}
+.theme-forest .shop-item-icon {
+    color: #ffb300 !important;
+}
+/* VISIBLE PREVIEW DOT BORDER */
+.theme-forest .theme-preview-dot {
+    border-color: #ffca28 !important;
+}
+
+/* =========================================
+   SPECIAL COMPONENT RESETS
+   ========================================= */
+
+/* SPECIFIC PREVIEW DOT COLORS FOR DEFAULT PARCHMENT CARD */
+.theme-blueprint .default-theme-card .preview-dot-parchment,
+.theme-forest .default-theme-card .preview-dot-parchment {
+    background-color: #f3e5ab !important;
+}
+.theme-blueprint .default-theme-card .preview-dot-ink,
+.theme-forest .default-theme-card .preview-dot-ink {
+    background-color: #2c1810 !important;
+}
+.theme-blueprint .default-theme-card .preview-dot-seal,
+.theme-forest .default-theme-card .preview-dot-seal {
+    background-color: #8a1c1c !important;
+}
+
+/* =========================================
+   GLOBAL FONT FIXES
+   ========================================= */
+/* Ensure Songti (Serif) is used for descriptions, preventing HeiTi fallback */
+.font-serif {
+    font-family: 'Noto Serif TC', serif !important;
+}

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Die Boten-Gilde</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+TC:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              // Added Noto Serif TC here so Chinese falls back to Songti instead of browser default Sans
+              fantasy: ['Cinzel', 'Noto Serif TC', 'serif'],
+              body: ['Noto Serif TC', 'Merriweather', 'serif'],
+            },
+            colors: {
+              parchment: '#f3e5ab',
+              'parchment-dark': '#d4c59a',
+              ink: '#2c1810',
+              seal: '#8a1c1c',
+            },
+            backgroundImage: {
+              'paper-texture': "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #1a1a1a;
+        color: #f3e5ab;
+        font-family: 'Noto Serif TC', 'Merriweather', serif;
+        /* Transitions moved to themes.css */
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      .text-blur {
+        color: transparent;
+        text-shadow: 0 0 8px rgba(44, 24, 16, 0.5);
+        user-select: none;
+        transition: all 0.5s ease;
+      }
+      .text-reveal {
+        color: #2c1810;
+        text-shadow: none;
+        user-select: text;
+        transition: all 0.5s ease;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
