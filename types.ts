@@ -134,10 +134,12 @@ export interface MissionData {
     source: string;
   };
   // Added for Demo Mode
-  score: number;
-  outcome: string;
-};
-illustrationUrl ?: string; // For Demo or Pre-rendered missions
+  mockFeedback?: {
+    correction: string;
+    score: number;
+    outcome: string;
+  };
+  illustrationUrl?: string;
 }
 
 export interface MissionRecord {
