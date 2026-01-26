@@ -205,7 +205,7 @@ export const SelectionMenu: React.FC = () => {
         <div
             ref={menuRef}
             style={{
-                position: 'absolute',
+                position: 'fixed',
                 left: position.x,
                 top: position.y,
                 transform: 'translate(-50%, -100%)'
