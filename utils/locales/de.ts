@@ -14,7 +14,8 @@ export const de = {
     signAndSeal: "Unterzeichnen & Siegeln",
     consultingOracles: "Befrage die Orakel...",
     loadingDecoding: "Entschlüssele die Nachricht...",
-    loadingAudio: "Beschwöre die Stimme...",
+    loadingDecoding: "Entschlüssele die Nachricht...",
+    // loadingAudio removed (duplicate)
     guestMode: "Gastmodus (Demo)",
     shop: "Handelsposten",
     buy: "Kaufen",
