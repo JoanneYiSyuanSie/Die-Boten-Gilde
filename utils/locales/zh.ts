@@ -188,6 +188,8 @@ export const zh = {
     yourAttempt: "您的嘗試",
     correctionAdvice: "修正建議",
     note: "筆記",
+    editEntry: "編輯條目",
+    saveChanges: "儲存變更",
 
     // Epilogue
     demoModeNoRewards: "演示模式 - 不予獎勵",

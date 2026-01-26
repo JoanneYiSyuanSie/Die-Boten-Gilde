@@ -188,6 +188,8 @@ export const de = {
     yourAttempt: "Ihr Versuch",
     correctionAdvice: "Korrektur / Hinweis",
     note: "Notiz",
+    editEntry: "Eintrag bearbeiten",
+    saveChanges: "Änderungen speichern",
 
     // Epilogue
     demoModeNoRewards: "DEMO-MODUS - Keine Belohnungen",

@@ -14,6 +14,7 @@ interface GuildContextType {
   blackBookEntries: BlackBookEntry[];
   addToBlackBook: (original: string, correction: string, source: 'speaking' | 'writing', note?: string) => void;
   removeFromBlackBook: (id: string) => void;
+  updateBlackBookEntry: (id: string, updates: Partial<BlackBookEntry>) => void;
   importGuildData: (newProfile: GuildProfile, newBlackBook: BlackBookEntry[]) => void;
 }
 
@@ -41,97 +42,104 @@ export const GuildProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const purchaseItem = (item: ShopItem): boolean => {
-      // REQUESTED CHANGE: Removed logic for "First Origin Free". Items are always full cost.
-      const effectiveCost = item.cost;
+    // REQUESTED CHANGE: Removed logic for "First Origin Free". Items are always full cost.
+    const effectiveCost = item.cost;
 
-      if (profile.guildMarks < effectiveCost) return false;
+    if (profile.guildMarks < effectiveCost) return false;
 
-      const newMarks = profile.guildMarks - effectiveCost;
-      const newProfile = { ...profile, guildMarks: newMarks };
+    const newMarks = profile.guildMarks - effectiveCost;
+    const newProfile = { ...profile, guildMarks: newMarks };
 
-      if (item.type === 'consumable') {
-          // Add to inventory
-          const currentQty = newProfile.inventory[item.id] || 0;
-          newProfile.inventory = {
-              ...newProfile.inventory,
-              [item.id]: currentQty + 1
-          };
+    if (item.type === 'consumable') {
+      // Add to inventory
+      const currentQty = newProfile.inventory[item.id] || 0;
+      newProfile.inventory = {
+        ...newProfile.inventory,
+        [item.id]: currentQty + 1
+      };
+    } else {
+      // Unlock item (Origin, Theme, Badge)
+      if (!newProfile.unlockedRewards.includes(item.id)) {
+        newProfile.unlockedRewards = [...newProfile.unlockedRewards, item.id];
       } else {
-          // Unlock item (Origin, Theme, Badge)
-          if (!newProfile.unlockedRewards.includes(item.id)) {
-              newProfile.unlockedRewards = [...newProfile.unlockedRewards, item.id];
-          } else {
-              // Already owned non-consumable
-              return false;
-          }
+        // Already owned non-consumable
+        return false;
       }
+    }
 
-      updateProfile(newProfile);
-      return true;
+    updateProfile(newProfile);
+    return true;
   };
 
   const consumeItem = (itemId: string): boolean => {
-      const currentQty = profile.inventory[itemId] || 0;
-      if (currentQty <= 0) return false;
+    const currentQty = profile.inventory[itemId] || 0;
+    if (currentQty <= 0) return false;
 
-      const newInventory = { ...profile.inventory };
-      newInventory[itemId] = currentQty - 1;
-      
-      updateProfile({ inventory: newInventory });
-      return true;
+    const newInventory = { ...profile.inventory };
+    newInventory[itemId] = currentQty - 1;
+
+    updateProfile({ inventory: newInventory });
+    return true;
   };
 
   const equipTheme = (themeId: string | undefined) => {
-      // Validate ownership if setting a theme
-      if (themeId && !profile.unlockedRewards.includes(themeId)) return;
-      updateProfile({ activeThemeId: themeId });
+    // Validate ownership if setting a theme
+    if (themeId && !profile.unlockedRewards.includes(themeId)) return;
+    updateProfile({ activeThemeId: themeId });
   };
 
   const addToBlackBook = (original: string, correction: string, source: 'speaking' | 'writing', note?: string) => {
     const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
-    
+
     const newEntry: BlackBookEntry = {
-        id: generateId(),
-        original,
-        correction,
-        source,
-        note,
-        timestamp: Date.now()
+      id: generateId(),
+      original,
+      correction,
+      source,
+      note,
+      timestamp: Date.now()
     };
     setBlackBookEntries(prev => {
-        const updated = [newEntry, ...prev];
-        saveBlackBook(updated);
-        return updated;
+      const updated = [newEntry, ...prev];
+      saveBlackBook(updated);
+      return updated;
     });
   };
 
   const removeFromBlackBook = (id: string) => {
-      setBlackBookEntries(prev => {
-          const updated = prev.filter(e => e.id !== id);
-          saveBlackBook(updated);
-          return updated;
-      });
+    setBlackBookEntries(prev => {
+      const updated = prev.filter(e => e.id !== id);
+      saveBlackBook(updated);
+      return updated;
+    });
   };
 
   const importGuildData = (newProfile: GuildProfile, newBlackBook: BlackBookEntry[]) => {
-      setProfile(newProfile);
-      saveProfile(newProfile);
-      setBlackBookEntries(newBlackBook);
-      saveBlackBook(newBlackBook);
+    setProfile(newProfile);
+    saveProfile(newProfile);
+    setBlackBookEntries(newBlackBook);
+    saveBlackBook(newBlackBook);
   };
 
   return (
-    <GuildContext.Provider value={{ 
-        profile, 
-        updateProfile, 
-        addGuildMarks, 
-        purchaseItem,
-        consumeItem,
-        equipTheme,
-        blackBookEntries, 
-        addToBlackBook, 
-        removeFromBlackBook,
-        importGuildData
+    <GuildContext.Provider value={{
+      profile,
+      updateProfile,
+      addGuildMarks,
+      purchaseItem,
+      consumeItem,
+      equipTheme,
+      blackBookEntries,
+      addToBlackBook,
+      removeFromBlackBook,
+      updateBlackBookEntry: (id: string, updates: Partial<BlackBookEntry>) => {
+        setBlackBookEntries(prev => {
+          const updated = prev.map(e => e.id === id ? { ...e, ...updates } : e);
+          saveBlackBook(updated);
+          return updated;
+        });
+      },
+      importGuildData
     }}>
       {children}
     </GuildContext.Provider>

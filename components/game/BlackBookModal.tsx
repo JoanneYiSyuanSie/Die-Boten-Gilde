@@ -11,7 +11,7 @@ import { WordEntry } from '../../types';
 import { getPonsLink, getDwdsLink, getLeoLink, getGodicLink } from '../../utils/dictionaryUtils';
 
 export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-    const { blackBookEntries, removeFromBlackBook } = useGuild();
+    const { blackBookEntries, removeFromBlackBook, updateBlackBookEntry } = useGuild();
     const { words, removeWord, addWord, updateWord } = useDictionary();
     const { settings } = useSettings();
     const t = translations[settings.language];
@@ -267,6 +267,28 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
         </div>
     );
 
+    const [editingBlackBookId, setEditingBlackBookId] = useState<string | null>(null);
+    const [editForm, setEditForm] = useState({ original: '', correction: '', note: '' });
+
+    const startEditingBlackBook = (entry: any) => {
+        setEditingBlackBookId(entry.id);
+        setEditForm({
+            original: entry.original,
+            correction: entry.correction,
+            note: entry.note || ''
+        });
+    };
+
+    const saveBlackBookEdit = () => {
+        if (!editingBlackBookId) return;
+        updateBlackBookEntry(editingBlackBookId, {
+            original: editForm.original,
+            correction: editForm.correction,
+            note: editForm.note
+        });
+        setEditingBlackBookId(null);
+    };
+
     const renderBlackBook = () => (
         <div className="space-y-4">
             {blackBookEntries.length === 0 && (
@@ -274,29 +296,74 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
             )}
             {blackBookEntries.map(entry => (
                 <div key={entry.id} className="p-4 bg-black/5 border border-[#2c1810]/20 rounded relative group">
-                    {entry.original && (
-                        <div className="mb-2 bg-[#8a1c1c]/5 p-2 rounded border border-[#8a1c1c]/10">
-                            <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">{t.yourAttempt}</span>
-                            <span className="font-serif italic text-[#2c1810]">{entry.original}</span>
+                    {editingBlackBookId === entry.id ? (
+                        <div className="space-y-3 animate-in fade-in">
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-[#8a1c1c]">{t.yourAttempt}</label>
+                                <textarea
+                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-serif"
+                                    value={editForm.original}
+                                    onChange={e => setEditForm(prev => ({ ...prev, original: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-green-800">{t.correctionAdvice}</label>
+                                <textarea
+                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-mono"
+                                    value={editForm.correction}
+                                    onChange={e => setEditForm(prev => ({ ...prev, correction: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] uppercase font-bold text-gray-500">{t.note}</label>
+                                <input
+                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white"
+                                    value={editForm.note}
+                                    onChange={e => setEditForm(prev => ({ ...prev, note: e.target.value }))}
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2 pt-2">
+                                <button onClick={() => setEditingBlackBookId(null)} className="px-3 py-1 text-xs font-bold text-[#2c1810] hover:bg-black/5 rounded">{t.cancel}</button>
+                                <button onClick={saveBlackBookEdit} className="px-3 py-1 text-xs font-bold text-[#f3e5ab] bg-[#8a1c1c] rounded shadow hover:bg-[#a62424]">{t.saveChanges}</button>
+                            </div>
                         </div>
+                    ) : (
+                        <>
+                            {entry.original && (
+                                <div className="mb-2 bg-[#8a1c1c]/5 p-2 rounded border border-[#8a1c1c]/10">
+                                    <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">{t.yourAttempt}</span>
+                                    <span className="font-serif italic text-[#2c1810]">{entry.original}</span>
+                                </div>
+                            )}
+                            {entry.correction && (
+                                <div className="mb-2">
+                                    <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">{t.correctionAdvice}</span>
+                                    <span className="font-mono text-xs text-[#2c1810] whitespace-pre-wrap">{entry.correction}</span>
+                                </div>
+                            )}
+                            {entry.note && (
+                                <div className="text-xs text-gray-500 italic mt-2 pt-2 border-t border-black/5">
+                                    <span className="font-bold">{t.note}:</span> {entry.note}
+                                </div>
+                            )}
+                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all bg-white/80 rounded shadow-sm">
+                                <button
+                                    onClick={() => startEditingBlackBook(entry)}
+                                    className="text-blue-800 hover:text-blue-600 p-1"
+                                    title={t.editEntry}
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                </button>
+                                <button
+                                    onClick={() => removeFromBlackBook(entry.id)}
+                                    className="text-gray-400 hover:text-red-800 p-1"
+                                    title={t.delete}
+                                >
+                                    <Icons.Cross className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </>
                     )}
-                    {entry.correction && (
-                        <div className="mb-2">
-                            <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">{t.correctionAdvice}</span>
-                            <span className="font-mono text-xs text-[#2c1810] whitespace-pre-wrap">{entry.correction}</span>
-                        </div>
-                    )}
-                    {entry.note && (
-                        <div className="text-xs text-gray-500 italic mt-2 pt-2 border-t border-black/5">
-                            <span className="font-bold">{t.note}:</span> {entry.note}
-                        </div>
-                    )}
-                    <button
-                        onClick={() => removeFromBlackBook(entry.id)}
-                        className="absolute top-2 right-2 text-gray-400 hover:text-red-800 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                        <Icons.Cross className="w-4 h-4" />
-                    </button>
                 </div>
             ))}
         </div>
