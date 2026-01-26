@@ -50,7 +50,7 @@ export const DEMO_MISSION: MissionData = {
     relationship: "Hostile",
     initialStatement: "Halt! Wer da? Bleib stehen oder ich greife an!",
     initialStatementTranslation: "站住！誰在那裡？停下，否則我就要攻擊了！",
-    initialStatementAudio: "demo-audio/demo_level2_npc_start.wav",
+    initialStatementAudio: `${import.meta.env.BASE_URL}demo-audio/demo_level2_npc_start.wav`,
     goal: "Überzeuge die Wache, dass du zur Gilde gehörst.",
     objectives: [
       { id: "obj1", description: "Identität klären", isMain: true },
@@ -66,7 +66,7 @@ export const DEMO_MISSION: MissionData = {
         correction: "文法建議：\n1. 'Ich bin *ein* Bote.' (加上不定冠詞)\n2. '...*der* Gilde.' (Gilde 是陰性，所有格用 der)\n完整建議：Ich bin ein Bote der Gilde.",
         trustGain: 30,
         hint: "【教學】守衛問你是誰。請點擊「發送」或錄音。系統會模擬一個常見的初學者回答，並展示 AI 如何修正你的文法。",
-        audioUrl: "demo-audio/demo_level2_npc_step1.wav"
+        audioUrl: `${import.meta.env.BASE_URL}demo-audio/demo_level2_npc_step1.wav`
       },
       {
         step: 2,
@@ -77,7 +77,7 @@ export const DEMO_MISSION: MissionData = {
         correction: "文法建議：\n動詞位置錯誤。在主句中，動詞通常位於第二位。\n正確說法：'Hier *ist* das Siegel.'",
         trustGain: 40,
         hint: "【教學】請嘗試再次發送。這次我們會模擬動詞位置錯誤的情況。",
-        audioUrl: "demo-audio/demo_level2_npc_step2.wav"
+        audioUrl: `${import.meta.env.BASE_URL}demo-audio/demo_level2_npc_step2.wav`
       },
       {
         step: 3,
@@ -88,7 +88,7 @@ export const DEMO_MISSION: MissionData = {
         trustGain: 30,
         hint: "【教學】對話結束。請點擊「結束對話」前往下一階段。",
         finalReveal: true,
-        audioUrl: "demo-audio/demo_level2_npc_end.wav"
+        audioUrl: `${import.meta.env.BASE_URL}demo-audio/demo_level2_npc_end.wav`
       }
     ]
   },
