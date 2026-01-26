@@ -216,7 +216,6 @@ export const SelectionMenu: React.FC = () => {
             >
                 <Icons.Book className="w-4 h-4" />
                 <span>{t.addToGrimoire}</span>
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#2c1810]"></div>
             </button>
         </div>
     );
