@@ -4,21 +4,21 @@ import { CEFRLevel, MissionData } from "../../types";
 import { getAllTraitIds } from "../../constants/npcTraits";
 import { parseJSON, getInterfaceLangName } from "./utils";
 import { getLevelConstraints, getSystemPrompt } from "./prompts";
-import { 
-    getMissionSchema, 
-    getSpeakingTrainingSchema, 
-    getReadingTrainingSchema, 
-    getWritingTrainingSchema 
+import {
+  getMissionSchema,
+  getSpeakingTrainingSchema,
+  getReadingTrainingSchema,
+  getWritingTrainingSchema
 } from "./schemas";
 
 export const generateMission = async (apiKey: string, level: CEFRLevel, topic: string, interfaceLang: 'de' | 'zh', playerIdentityPrompt?: string): Promise<MissionData> => {
   if (!apiKey) throw new Error("API Key is missing");
   const client = new GoogleGenAI({ apiKey });
-  
+
   const metaLang = getInterfaceLangName(interfaceLang);
   const constraints = getLevelConstraints(level);
   const { roles, backgrounds, personalities } = getAllTraitIds();
-  
+
   const prompt = `Generate a 3-stage mission based on the specific scenario: "${topic}".
   ${playerIdentityPrompt ? `Player Identity: ${playerIdentityPrompt}. Incorporate this into the scenario or NPC attitude.` : ""}
   
@@ -62,14 +62,14 @@ export const generateMission = async (apiKey: string, level: CEFRLevel, topic: s
 };
 
 export const generateSpeakingTraining = async (apiKey: string, level: CEFRLevel, topic: string, interfaceLang: 'de' | 'zh', playerIdentityPrompt?: string): Promise<MissionData> => {
-    if (!apiKey) throw new Error("API Key is missing");
-    const client = new GoogleGenAI({ apiKey });
-    
-    const metaLang = getInterfaceLangName(interfaceLang);
-    const constraints = getLevelConstraints(level);
-    const { roles, backgrounds, personalities } = getAllTraitIds();
-    
-    const prompt = `Generate a Speaking scenario for a minor daily guild task: "${topic}".
+  if (!apiKey) throw new Error("API Key is missing");
+  const client = new GoogleGenAI({ apiKey });
+
+  const metaLang = getInterfaceLangName(interfaceLang);
+  const constraints = getLevelConstraints(level);
+  const { roles, backgrounds, personalities } = getAllTraitIds();
+
+  const prompt = `Generate a Speaking scenario for a minor daily guild task: "${topic}".
     MUNDANE REQUIREMENT: Keep the interaction short, simple, and low-stakes (everyday messenger life).
     CONSTRAINT: The German text MUST adhere to these rules: ${constraints}
     ${playerIdentityPrompt ? `Player Identity: ${playerIdentityPrompt}.` : ""}
@@ -80,32 +80,37 @@ export const generateSpeakingTraining = async (apiKey: string, level: CEFRLevel,
      - BACKGROUNDS: [${backgrounds}]
      - PERSONALITIES: [${personalities}]
     
+    CRITICAL:
+    1. 'negotiation.goal': Describe clearly what the player needs to achieve in this conversation (e.g., "Find out where the package is").
+    2. 'negotiation.objectives': Provide 2 simple objectives (1 Main, 1 Side).
+
     Historical setting (800-1900 AD).
     NO Historical Fact needed for training.`;
-    
-    const response = await client.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: prompt,
-      config: {
-        systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
-        responseMimeType: "application/json",
-        responseSchema: getSpeakingTrainingSchema()
-      }
-    });
-    const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
-    return { ...parsed, level } as MissionData;
+
+  const response = await client.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: prompt,
+    config: {
+      systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
+      responseMimeType: "application/json",
+      responseSchema: getSpeakingTrainingSchema()
+    }
+  });
+  const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
+  return { ...parsed, level } as MissionData;
 };
 
+
 export const generateReadingTraining = async (apiKey: string, level: CEFRLevel, topic: string, interfaceLang: 'de' | 'zh', playerIdentityPrompt?: string): Promise<MissionData> => {
-    if (!apiKey) throw new Error("API Key is missing");
-    const client = new GoogleGenAI({ apiKey });
-    
-    const metaLang = getInterfaceLangName(interfaceLang);
-    const constraints = getLevelConstraints(level);
-    
-    const response = await client.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Generate a Reading Training scenario for a minor daily guild task: "${topic}". 
+  if (!apiKey) throw new Error("API Key is missing");
+  const client = new GoogleGenAI({ apiKey });
+
+  const metaLang = getInterfaceLangName(interfaceLang);
+  const constraints = getLevelConstraints(level);
+
+  const response = await client.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `Generate a Reading Training scenario for a minor daily guild task: "${topic}". 
       MUNDANE REQUIREMENT: Keep the text short (max 100 words), simple, and focused on everyday vocabulary.
       CONSTRAINT: The German text MUST adhere to these rules: ${constraints}
       ${playerIdentityPrompt ? `Player Identity: ${playerIdentityPrompt}.` : ""}
@@ -113,39 +118,42 @@ export const generateReadingTraining = async (apiKey: string, level: CEFRLevel, 
       1. Text length approx 50-80 words (for low levels) or 100-120 (for high).
       2. Include 3 'readingQuestions' (MCQ) in addition to Cloze segments.
       NO Historical Fact needed for training.`,
-      config: {
-        systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
-        responseMimeType: "application/json",
-        responseSchema: getReadingTrainingSchema()
-      }
-    });
-    const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
-    return { ...parsed, level } as MissionData;
+    config: {
+      systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
+      responseMimeType: "application/json",
+      responseSchema: getReadingTrainingSchema()
+    }
+  });
+  const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
+  return { ...parsed, level } as MissionData;
 };
 
 export const generateWritingTraining = async (apiKey: string, level: CEFRLevel, topic: string, interfaceLang: 'de' | 'zh', playerIdentityPrompt?: string): Promise<MissionData> => {
-    if (!apiKey) throw new Error("API Key is missing");
-    const client = new GoogleGenAI({ apiKey });
-    
-    const metaLang = getInterfaceLangName(interfaceLang);
-    const constraints = getLevelConstraints(level);
-    
-    const response = await client.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Generate a Writing Training task for a minor daily guild task: "${topic}". 
+  if (!apiKey) throw new Error("API Key is missing");
+  const client = new GoogleGenAI({ apiKey });
+
+  const metaLang = getInterfaceLangName(interfaceLang);
+  const constraints = getLevelConstraints(level);
+
+  const response = await client.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: `Generate a Writing Training task for a minor daily guild task: "${topic}". 
       MUNDANE REQUIREMENT: Keep the task focused on everyday short correspondence or notes.
       CONSTRAINT: The instructions should consider these language limits: ${constraints}
       ${playerIdentityPrompt ? `Player Identity: ${playerIdentityPrompt}.` : ""}
       Historical setting (800-1900 AD).
       
-      'reportPrompt' MUST be in GERMAN.
+      CRITICAL:
+      1. 'reportPrompt' MUST be in GERMAN (Target Language), NOT ${metaLang}. 
+      This is an immersion exercise. The player must read the writing instruction in German.
+      
       NO Historical Fact needed for training.`,
-      config: {
-        systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
-        responseMimeType: "application/json",
-        responseSchema: getWritingTrainingSchema()
-      }
-    });
-    const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
-    return { ...parsed, level } as MissionData;
+    config: {
+      systemInstruction: getSystemPrompt(level, interfaceLang, playerIdentityPrompt),
+      responseMimeType: "application/json",
+      responseSchema: getWritingTrainingSchema()
+    }
+  });
+  const parsed = parseJSON<Partial<MissionData>>(response.text || "{}");
+  return { ...parsed, level } as MissionData;
 };

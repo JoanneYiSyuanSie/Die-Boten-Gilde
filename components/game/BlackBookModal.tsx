@@ -346,7 +346,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
                                     <span className="font-bold">{t.note}:</span> {entry.note}
                                 </div>
                             )}
-                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all bg-white/80 rounded shadow-sm">
+                            <div className="absolute top-2 right-2 flex gap-1 bg-white/80 rounded shadow-sm">
                                 <button
                                     onClick={() => startEditingBlackBook(entry)}
                                     className="text-blue-800 hover:text-blue-600 p-1"

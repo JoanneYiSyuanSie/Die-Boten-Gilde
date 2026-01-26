@@ -36,6 +36,8 @@ import { SelectionMenu } from './components/ui/SelectionMenu';
 import { Icons } from './components/ui/Icons';
 import { CustomSelect } from './components/ui/CustomSelect';
 
+import { ErrorModal } from './components/ui/ErrorModal';
+
 const GameContent: React.FC = () => {
   const { gameState, startGame, setGameState, updateTrust } = useGame();
   const { isConfigured, settings } = useSettings();
@@ -48,6 +50,8 @@ const GameContent: React.FC = () => {
   const [showShop, setShowShop] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
   const [showTrainingMenu, setShowTrainingMenu] = useState(false);
+
+  const [errorState, setErrorState] = useState<{ message: string, retryAction: () => void } | null>(null);
 
   const [selectedOriginId, setSelectedOriginId] = useState<string>("");
 
@@ -136,7 +140,16 @@ const GameContent: React.FC = () => {
       setLoadingProgress(100);
       startGame(missionData, audioUrl, mode, startPhase, selectedOriginId || undefined);
     } catch (e) {
-      alert(t.errorTitle + ": " + (e instanceof Error ? e.message : "Unknown error"));
+      console.error(e);
+      let errorMsg = e instanceof Error ? e.message : "Unknown error";
+      if (errorMsg.includes("503") || errorMsg.includes("Overloaded")) {
+        errorMsg = "The Oracle is temporarily overwhelmed by the currents of time (503).";
+      }
+
+      setErrorState({
+        message: errorMsg,
+        retryAction: () => initiateMission(mode, startPhase)
+      });
       setGameState(prev => ({ ...prev, currentPhase: GamePhase.MENU }));
     }
   };
@@ -171,7 +184,11 @@ const GameContent: React.FC = () => {
         return true;
       } catch (e) {
         console.error(e);
-        alert(t.spyFailedReport);
+        const errorMsg = e instanceof Error ? e.message : "Unknown error";
+        setErrorState({
+          message: errorMsg,
+          retryAction: () => handleItemUse(item) // Note: This might recurse if not careful, but okay for manual retry
+        });
         setGameState(prev => ({
           ...prev,
           lastNegotiationFeedback: null // Clear loading
@@ -391,6 +408,7 @@ const GameContent: React.FC = () => {
       {showLibrary && <BlackBookModal onClose={() => setShowLibrary(false)} />}
       {showShop && <ShopModal onClose={() => setShowShop(false)} />}
       {showInventory && <InventoryModal onClose={() => setShowInventory(false)} currentPhase={gameState.currentPhase} onUseItem={handleItemUse} />}
+      {errorState && <ErrorModal error={errorState} onClose={() => setErrorState(null)} />}
 
       <main className="p-2 md:p-4 pt-12 md:pt-16 min-h-screen relative overflow-auto scrollbar-hide pb-20 md:pb-4">
         <QuestLogNav />
