@@ -67,9 +67,10 @@ export const SelectionMenu: React.FC = () => {
                 setSelectedText(text);
                 setContextText(context);
 
+                // Use Fixed Positioning to be accurate relative to viewport
                 setPosition({
                     x: rect.left + (rect.width / 2),
-                    y: rect.top + window.scrollY - 35
+                    y: rect.top - 10 // 10px clearance above
                 });
             } catch (e) {
                 console.error("Selection handling error:", e);
@@ -77,17 +78,16 @@ export const SelectionMenu: React.FC = () => {
             }
         };
 
-        document.addEventListener('mouseup', handleSelection);
-        document.addEventListener('touchend', handleSelection);
-        document.addEventListener('scroll', () => {
-            if (!showForm) setPosition(null);
-        });
+        document.addEventListener('selectionchange', handleSelection);
+        window.addEventListener('scroll', handleSelection);
+        window.addEventListener('resize', handleSelection);
 
         return () => {
-            document.removeEventListener('mouseup', handleSelection);
-            document.removeEventListener('touchend', handleSelection);
+            document.removeEventListener('selectionchange', handleSelection);
+            window.removeEventListener('scroll', handleSelection);
+            window.removeEventListener('resize', handleSelection);
         };
-    }, [showForm]);
+    }, []); // Keep showForm in dependencies to ensure handleSelectionChange always has the latest state
 
     const handleOpenForm = (e: React.MouseEvent) => {
         e.stopPropagation();

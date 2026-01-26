@@ -348,16 +348,19 @@ export const Level2View: React.FC = () => {
                         </div>
                     )}
 
-                    {/* TRAIT BADGES (MOVED TO TOP) */}
+                    <h3 className="text-xl font-fantasy font-bold mb-1">{mission?.negotiation?.npcName}</h3>
+                    <p className="text-xs italic mb-4 whitespace-pre-wrap opacity-70 leading-tight">{mission?.negotiation?.npcRole}</p>
+
+                    {/* TRAIT BADGES (NEW STRUCTURE) */}
                     {mission?.negotiation?.npcAttributes ? (
-                        <div className="flex flex-wrap gap-2 mb-2 p-1">
+                        <div className="flex flex-wrap gap-2 mb-4 p-1 relative z-50">
                             {renderTraitBadge(mission.negotiation.npcAttributes.roleId)}
                             {renderTraitBadge(mission.negotiation.npcAttributes.backgroundId)}
                             {renderTraitBadge(mission.negotiation.npcAttributes.personalityId)}
                         </div>
                     ) : (
                         mission?.negotiation?.npcTraits && (
-                            <div className="flex flex-wrap gap-2 mb-2">
+                            <div className="flex flex-wrap gap-2 mb-4 relative z-50">
                                 {mission.negotiation.npcTraits.map((tId: string) => (
                                     <div key={tId} className="text-[10px] px-2 py-1 rounded border border-black/20 bg-white/40 font-bold">
                                         {tId}
@@ -366,9 +369,6 @@ export const Level2View: React.FC = () => {
                             </div>
                         )
                     )}
-
-                    <h3 className="text-xl font-fantasy font-bold mb-1">{mission?.negotiation?.npcName}</h3>
-                    <p className="text-xs italic mb-4 whitespace-pre-wrap opacity-70 leading-tight">{mission?.negotiation?.npcRole}</p>
 
                     <div className="mb-4 md:mb-6">
                         <label className="font-bold block text-sm mb-1">{t.goalLabel}</label>
