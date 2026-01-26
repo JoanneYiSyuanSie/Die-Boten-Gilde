@@ -45,12 +45,12 @@ export interface GuildProfile {
 }
 
 export interface BlackBookEntry {
-    id: string;
-    original: string;
-    correction: string;
-    note?: string;
-    timestamp: number;
-    source: 'speaking' | 'writing';
+  id: string;
+  original: string;
+  correction: string;
+  note?: string;
+  timestamp: number;
+  source: 'speaking' | 'writing';
 }
 
 export interface WordEntry {
@@ -85,21 +85,21 @@ export interface ReadingQuestion {
 
 // Demo Mode Specific Types
 export interface ScriptStep {
-    step: number;
-    npcText: string;
-    userRaw: string;   // Simulated imperfect input
-    correction: string; // The feedback/grammar correction
-    trustGain: number;
-    hint?: string;
-    finalReveal?: boolean;
-    npcTranslation?: string; // Pre-defined translation for demo
-    audioUrl?: string; // Pre-recorded audio path
+  step: number;
+  npcText: string;
+  userRaw: string;   // Simulated imperfect input
+  correction: string; // The feedback/grammar correction
+  trustGain: number;
+  hint?: string;
+  finalReveal?: boolean;
+  npcTranslation?: string; // Pre-defined translation for demo
+  audioUrl?: string; // Pre-recorded audio path
 }
 
 export interface NpcAttributes {
-    roleId: string;
-    backgroundId: string;
-    personalityId: string;
+  roleId: string;
+  backgroundId: string;
+  personalityId: string;
 }
 
 export interface MissionData {
@@ -134,11 +134,10 @@ export interface MissionData {
     source: string;
   };
   // Added for Demo Mode
-  mockFeedback?: {
-      correction: string;
-      score: number;
-      outcome: string;
-  };
+  score: number;
+  outcome: string;
+};
+illustrationUrl ?: string; // For Demo or Pre-rendered missions
 }
 
 export interface MissionRecord {

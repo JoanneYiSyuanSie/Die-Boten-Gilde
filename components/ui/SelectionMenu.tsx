@@ -4,6 +4,7 @@ import { useDictionary } from '../../contexts/DictionaryContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { translations } from '../../utils/translations';
 import { getPonsLink, getDwdsLink, getLeoLink, getGodicLink } from '../../utils/dictionaryUtils';
+import { Icons } from './Icons';
 
 export const SelectionMenu: React.FC = () => {
     const [position, setPosition] = useState<{ x: number, y: number } | null>(null);

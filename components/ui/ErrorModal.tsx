@@ -3,6 +3,7 @@ import { translations } from '../../utils/translations';
 import { useSettings } from '../../contexts/SettingsContext';
 import { ParchmentContainer } from './ParchmentContainer';
 import { FantasyButton } from './FantasyButton';
+import { Icons } from './Icons';
 
 interface ErrorModalProps {
     error: { message: string, retryAction?: () => void };
