@@ -70,7 +70,7 @@ export const SelectionMenu: React.FC = () => {
                 // Use Fixed Positioning to be accurate relative to viewport
                 setPosition({
                     x: rect.left + (rect.width / 2),
-                    y: rect.top - 10 // 10px clearance above
+                    y: rect.top - 10
                 });
             } catch (e) {
                 console.error("Selection handling error:", e);
@@ -78,12 +78,15 @@ export const SelectionMenu: React.FC = () => {
             }
         };
 
-        document.addEventListener('selectionchange', handleSelection);
+        document.addEventListener('mouseup', handleSelection);
+        document.addEventListener('touchend', handleSelection);
+        // We keep scroll/resize to update position if the user scrolls AFTER selecting
         window.addEventListener('scroll', handleSelection);
         window.addEventListener('resize', handleSelection);
 
         return () => {
-            document.removeEventListener('selectionchange', handleSelection);
+            document.removeEventListener('mouseup', handleSelection);
+            document.removeEventListener('touchend', handleSelection);
             window.removeEventListener('scroll', handleSelection);
             window.removeEventListener('resize', handleSelection);
         };
