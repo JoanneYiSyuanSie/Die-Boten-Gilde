@@ -14,7 +14,6 @@ export const zh = {
     signAndSeal: "簽署並蓋章",
     consultingOracles: "請示神諭中……",
     loadingDecoding: "正在解讀訊息……",
-    loadingDecoding: "正在解讀訊息……",
     // loadingAudio removed (duplicate)
     guestMode: "訪客模式 (Demo)",
     shop: "公會補給站",
