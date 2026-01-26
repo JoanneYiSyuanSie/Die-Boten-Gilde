@@ -17,7 +17,9 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({ error, onClose }) => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <ParchmentContainer className="max-w-md w-full animate-in zoom-in-95 duration-300 border-4 border-[#8a1c1c] shadow-[0_0_50px_rgba(138,28,28,0.5)]">
                 <div className="text-center space-y-4">
-                    <div className="text-5xl mb-2">🐢</div>
+                    <div className="mb-2 flex justify-center">
+                        <Icons.Turtle className="w-16 h-16 text-[#8a1c1c] animate-pulse" strokeWidth={1.5} />
+                    </div>
                     <h3 className="text-2xl font-fantasy font-bold text-[#8a1c1c] uppercase tracking-widest">{t.serverBusy || "Server Busy"}</h3>
 
                     <p className="text-[#2c1810] font-bold text-sm bg-[#8a1c1c]/10 p-4 rounded border border-[#8a1c1c]/20">

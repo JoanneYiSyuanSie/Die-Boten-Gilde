@@ -96,6 +96,7 @@ const GameContent: React.FC = () => {
     setLoadingProgress(10);
     setLoadingText(t.consultingOracles);
     setGameState(prev => ({ ...prev, currentPhase: GamePhase.LOADING }));
+    setErrorState(null); // Clear any previous error state on retry
 
     try {
       let topicToSend = "";

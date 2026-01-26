@@ -1,26 +1,27 @@
 
-import { 
-  Settings, 
-  Book, 
-  X, 
-  Check, 
-  Loader2, 
-  Coins, 
-  Store, 
-  Backpack, 
-  Coffee, 
-  Key, 
-  ScrollText, 
-  Anchor, 
-  Shield, 
-  Feather, 
-  GraduationCap, 
-  BookOpen, 
-  Map, 
-  Compass, 
-  Crown, 
+import {
+  Settings,
+  Book,
+  X,
+  Check,
+  Loader2,
+  Coins,
+  Store,
+  Backpack,
+  Coffee,
+  Key,
+  ScrollText,
+  Anchor,
+  Shield,
+  Feather,
+  GraduationCap,
+  BookOpen,
+  Map,
+  Compass,
+  Crown,
   HelpCircle,
-  ChevronDown
+  ChevronDown,
+  Turtle
 } from 'lucide-react';
 
 // Exporting Lucide components mapped to the names used in the app.
@@ -36,7 +37,7 @@ export const Icons = {
   Store: Store,
   Satchel: Backpack, // Alias Satchel to Backpack
   ChevronDown: ChevronDown,
-  
+
   // Shop Icons
   Coffee: Coffee,
   Key: Key,
@@ -49,5 +50,6 @@ export const Icons = {
   Map: Map,
   Compass: Compass,
   Crown: Crown,
-  Default: HelpCircle
+  Default: HelpCircle,
+  Turtle: Turtle
 };

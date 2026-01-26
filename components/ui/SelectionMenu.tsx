@@ -213,7 +213,8 @@ export const SelectionMenu: React.FC = () => {
                 onClick={handleOpenForm}
                 className="bg-[#2c1810] text-[#f3e5ab] px-3 py-1 rounded shadow-lg border border-[#f3e5ab] font-fantasy text-sm hover:bg-[#4a2e20] transition flex items-center gap-2 whitespace-nowrap"
             >
-                <span>📖 {t.addToGrimoire}</span>
+                <Icons.Book className="w-4 h-4" />
+                <span>{t.addToGrimoire}</span>
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#2c1810]"></div>
             </button>
         </div>

@@ -181,6 +181,8 @@ export const EpilogueView: React.FC = () => {
                                 </div>
                             ) : illustrationUrl ? (
                                 <img src={illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
+                            ) : mission?.illustrationUrl ? (
+                                <img src={mission.illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
                             ) : isDemo ? (
                                 <div className="text-center opacity-50 p-4">
                                     <div className="text-4xl mb-2">🖼️</div>

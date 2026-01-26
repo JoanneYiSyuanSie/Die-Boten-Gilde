@@ -47,6 +47,11 @@ export const DEMO_MISSION: MissionData = {
     npcName: "Wache",
     npcRole: "Eine streng aussehende Wache mit müden Augen. Er misstraut Fremden.",
     npcVoice: "Fenrir",
+    npcAttributes: {
+      roleId: 'GUARD',
+      backgroundId: 'COMMONER',
+      personalityId: 'STRICT'
+    },
     relationship: "Hostile",
     initialStatement: "Halt! Wer da? Bleib stehen oder ich greife an!",
     initialStatementTranslation: "站住！誰在那裡？停下，否則我就要攻擊了！",
@@ -94,11 +99,11 @@ export const DEMO_MISSION: MissionData = {
   },
 
   // Phase 3: Writing (Mock Feedback)
-  reportPrompt: "Berichte der Gilde vom Zustand des Königs. (Demo: 請隨意輸入以測試評分)",
+  reportPrompt: "Berichte der Gilde vom Zustand des Königs. (Demo: Schreiben Sie einen kurzen Bericht)",
   mockFeedback: {
-    outcome: "你的報告已送達。公會對你的表現非常滿意，你成功通過了入會測試。",
+    outcome: "Du hast die Wache überzeugt. Er lässt dich passieren und du betrittst die Stadt, um deinen Auftrag zu erfüllen.",
     score: 85,
-    correction: "這是一個模擬回饋。\n\n1. 'Der König ist krank' -> 更正式的說法是 'Der König ist erkrankt'.\n2. 注意德語名詞首字母大寫。\n\n(在正式遊戲中，AI 將會針對您實際撰寫的內容進行詳細批改)"
+    correction: "Das ist eine Simulation. (Ihre Texte werden im echten Spiel detailliert korrigiert)."
   },
 
   historicalFact: {
