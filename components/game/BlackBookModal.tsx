@@ -370,7 +370,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
     );
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <ParchmentContainer className="max-w-4xl w-full h-[85vh] flex flex-col overflow-hidden shadow-2xl">
                 <div className="flex justify-between items-center mb-4 border-b-2 border-[#2c1810] pb-2">
                     <div className="flex gap-4 items-end">

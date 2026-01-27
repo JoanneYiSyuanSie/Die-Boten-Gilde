@@ -120,7 +120,7 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <ParchmentContainer className="max-w-xl w-full h-[80vh] md:h-[600px] flex flex-col relative overflow-hidden transition-all duration-300">
 
                 {/* Header Section */}

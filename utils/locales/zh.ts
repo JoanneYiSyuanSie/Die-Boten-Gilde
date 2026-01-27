@@ -11,6 +11,8 @@ export const zh = {
     apiKeyLabel: "Gemini API 金鑰",
     interfaceLanguage: "介面語言",
     targetProficiency: "目標德語程度",
+    missionStatus: "任務狀態", // Added key
+    abandonWarning: "確定要放棄當前任務並返回大廳嗎？所有進度將會遺失。", // Ensure consistent usage
     signAndSeal: "簽署並蓋章",
     consultingOracles: "請示神諭中……",
     loadingDecoding: "正在解讀訊息……",

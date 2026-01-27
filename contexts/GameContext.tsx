@@ -22,43 +22,42 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [gameState, setGameState] = useState<GameState>(() => {
     try {
       const saved = localStorage.getItem('boten_gilde_gamestate');
-      return saved ? JSON.parse(saved) : {
-        gameMode: 'CAMPAIGN',
-        currentPhase: GamePhase.MENU,
-        maxPhaseReached: GamePhase.MENU,
-        mission: null,
-        audioUrl: null,
-        trustScore: 50,
-        playerReport: '',
-        feedback: null,
-        level1State: { answers: {}, mcqAnswers: {}, showResults: false, mistakes: [] },
-        chatHistory: [],
-        lastNegotiationFeedback: null,
-        audioCache: {},
-        metObjectiveIds: [],
-        illustrationUrl: undefined,
-        playerIdentityId: undefined,
-      };
+      if (saved) {
+        const parsed: GameState = JSON.parse(saved);
+
+        // Critical Validation: If we are in LEVEL_1, we MUST have a decryptedMessage.
+        // If not, it means the save is from a bad generation or corrupted.
+        if (parsed.currentPhase === GamePhase.LEVEL_1) {
+          if (!parsed.mission || !parsed.mission.decryptedMessage) {
+            console.warn("Detected corrupted save state (Level 1 with no message). Resetting to Menu.");
+            // Return default state instead
+            throw new Error("Corrupted State");
+          }
+        }
+        return parsed;
+      }
     } catch (e) {
-      console.error("Failed to load game state", e);
-      return {
-        gameMode: 'CAMPAIGN',
-        currentPhase: GamePhase.MENU,
-        maxPhaseReached: GamePhase.MENU,
-        mission: null,
-        audioUrl: null,
-        trustScore: 50,
-        playerReport: '',
-        feedback: null,
-        level1State: { answers: {}, mcqAnswers: {}, showResults: false, mistakes: [] },
-        chatHistory: [],
-        lastNegotiationFeedback: null,
-        audioCache: {},
-        metObjectiveIds: [],
-        illustrationUrl: undefined,
-        playerIdentityId: undefined,
-      };
+      console.error("Failed to load game state or state corrupted", e);
     }
+
+    // Default Fallback
+    return {
+      gameMode: 'CAMPAIGN',
+      currentPhase: GamePhase.MENU,
+      maxPhaseReached: GamePhase.MENU,
+      mission: null,
+      audioUrl: null,
+      trustScore: 50,
+      playerReport: '',
+      feedback: null,
+      level1State: { answers: {}, mcqAnswers: {}, showResults: false, mistakes: [] },
+      chatHistory: [],
+      lastNegotiationFeedback: null,
+      audioCache: {},
+      metObjectiveIds: [],
+      illustrationUrl: undefined,
+      playerIdentityId: undefined,
+    };
   });
 
   // Persist state on change

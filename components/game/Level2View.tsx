@@ -40,6 +40,7 @@ export const Level2View: React.FC = () => {
     const [loadingAudioIndices, setLoadingAudioIndices] = useState<Set<number>>(new Set());
     const [failedAudioIndices, setFailedAudioIndices] = useState<Set<number>>(new Set());
     const [loadingTranslationIndices, setLoadingTranslationIndices] = useState<Set<number>>(new Set());
+    const [activeTooltip, setActiveTooltip] = useState<{ text: string, x: number, y: number } | null>(null);
 
     // Track initial history length to prevent re-playing old messages on navigation
     const initialHistoryLength = useRef(chatHistory.length);
@@ -308,15 +309,22 @@ export const Level2View: React.FC = () => {
         // Highlighting synergy logic can be expanded here if needed
 
         return (
-            <div key={traitId} className={`text-[10px] px-2 py-1 rounded border flex flex-col ${synergyClass} cursor-help group relative`}>
+            <div
+                key={traitId}
+                className={`text-[10px] px-2 py-1 rounded border flex flex-col ${synergyClass} cursor-help group relative`}
+                onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setActiveTooltip({
+                        text: traitDef.description[settings.language],
+                        x: rect.left + (rect.width / 2),
+                        y: rect.top
+                    });
+                }}
+                onMouseLeave={() => setActiveTooltip(null)}
+            >
                 <span className="font-bold flex items-center gap-1">
                     {traitDef.name[settings.language]}
                 </span>
-
-                {/* Tooltip */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block w-32 bg-black text-[#f3e5ab] text-[9px] p-2 rounded z-50 pointer-events-none shadow-xl border border-[#f3e5ab]/30">
-                    {traitDef.description[settings.language]}
-                </div>
             </div>
         );
     };
@@ -568,6 +576,21 @@ export const Level2View: React.FC = () => {
                     </div>
                 </ParchmentContainer>
             </div>
+            {/* Fixed Tooltip Overlay */}
+            {activeTooltip && (
+                <div
+                    className="fixed z-[100] w-48 bg-black/90 text-[#f3e5ab] text-[10px] p-2 rounded shadow-xl border border-[#f3e5ab]/30 pointer-events-none animate-in fade-in duration-200"
+                    style={{
+                        left: activeTooltip.x,
+                        top: activeTooltip.y,
+                        transform: 'translate(-50%, -100%) translateY(-8px)'
+                    }}
+                >
+                    {activeTooltip.text}
+                    {/* Tiny arrow */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black/90" />
+                </div>
+            )}
         </div>
     );
 };

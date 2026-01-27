@@ -11,6 +11,8 @@ export const de = {
     apiKeyLabel: "Gemini API-Schlüssel",
     interfaceLanguage: "Schnittstellensprache",
     targetProficiency: "Ziel-Sprachniveau",
+    missionStatus: "Missionsstatus", // Added key
+    abandonWarning: "Möchten Sie die Mission wirklich aufgeben? Der Fortschritt geht verloren.",
     signAndSeal: "Unterzeichnen & Siegeln",
     consultingOracles: "Befrage die Orakel...",
     loadingDecoding: "Entschlüssele die Nachricht...",

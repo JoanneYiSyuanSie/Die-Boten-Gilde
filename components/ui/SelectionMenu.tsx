@@ -135,7 +135,7 @@ export const SelectionMenu: React.FC = () => {
     // 1. If form is active, show form (regardless of position)
     if (showForm) {
         return (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-[2px]">
+            <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-[2px]">
                 <div className="bg-[#f3e5ab] p-6 rounded-lg border-4 border-[#2c1810] shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                     <h3 className="text-xl font-fantasy font-bold mb-4 text-[#8a1c1c]">{t.addToGrimoire}</h3>
 
@@ -210,16 +210,18 @@ export const SelectionMenu: React.FC = () => {
                 top: position.y,
                 transform: 'translate(-50%, -100%)'
             }}
-            className="z-50 pb-2 animate-bounce"
+            className="z-50 pb-2"
             onMouseDown={(e) => e.preventDefault()} // Prevent button click from clearing selection
         >
-            <button
-                onClick={handleOpenForm}
-                className="bg-[#2c1810] text-[#f3e5ab] px-3 py-1 rounded shadow-lg border border-[#f3e5ab] font-fantasy text-sm hover:bg-[#4a2e20] transition flex items-center gap-2 whitespace-nowrap"
-            >
-                <Icons.Book className="w-4 h-4" />
-                <span>{t.addToGrimoire}</span>
-            </button>
+            <div className="animate-bounce">
+                <button
+                    onClick={handleOpenForm}
+                    className="bg-[#2c1810] text-[#f3e5ab] px-3 py-1 rounded shadow-lg border border-[#f3e5ab] font-fantasy text-sm hover:bg-[#4a2e20] transition flex items-center gap-2 whitespace-nowrap"
+                >
+                    <Icons.Book className="w-4 h-4" />
+                    <span>{t.addToGrimoire}</span>
+                </button>
+            </div>
         </div>
     );
 };

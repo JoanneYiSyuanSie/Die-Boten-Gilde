@@ -10,7 +10,7 @@ import { translations } from '../../utils/translations';
 import { pcmToWav } from '../../utils/audioUtils';
 
 export const Level1View: React.FC = () => {
-    const { gameState, setGameState, advancePhase } = useGame();
+    const { gameState, setGameState, advancePhase, abandonMission } = useGame();
     const { settings } = useSettings();
     const { mission, audioUrl, level1State } = gameState;
     const [demoAudioUrl, setDemoAudioUrl] = useState<string | null>(null);
@@ -34,8 +34,14 @@ export const Level1View: React.FC = () => {
         return (
             <div className="max-w-4xl mx-auto space-y-6">
                 <ParchmentContainer>
-                    <div className="text-center text-red-800 font-bold">
-                        {t.errorTitle}: Mission data is corrupted.
+                    <div className="text-center text-red-800 font-bold space-y-4">
+                        <p>{t.errorTitle}: Mission data is corrupted.</p>
+                        <p className="text-sm opacity-70">
+                            (Missing decryptedMessage for Level 1)
+                        </p>
+                        <FantasyButton onClick={abandonMission} className="mt-4">
+                            {t.backToMenu || "Return to Menu"}
+                        </FantasyButton>
                     </div>
                 </ParchmentContainer>
             </div>
@@ -134,10 +140,10 @@ export const Level1View: React.FC = () => {
                                 <span className="inline-block relative">
                                     <select
                                         className={`mx-1 border-b-2 bg-transparent outline-none cursor-pointer transition-colors appearance-none pr-6 text-center min-w-[80px] ${level1State.showResults
-                                                ? isClozeCorrect(segment.id)
-                                                    ? 'border-green-600 text-green-900 font-bold'
-                                                    : 'border-red-600 text-red-900 font-bold line-through opacity-70'
-                                                : 'border-black/40 hover:border-black font-bold'
+                                            ? isClozeCorrect(segment.id)
+                                                ? 'border-green-600 text-green-900 font-bold'
+                                                : 'border-red-600 text-red-900 font-bold line-through opacity-70'
+                                            : 'border-black/40 hover:border-black font-bold'
                                             }`}
                                         value={level1State.answers[segment.id] || ''}
                                         onChange={(e) => handleClozeSelect(segment.id, e.target.value)}
