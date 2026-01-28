@@ -148,6 +148,7 @@ export const zh = {
     serverBusy: "神諭忙線中",
     serverBusyDesc: "這段時間公會的通訊網路似乎有點擁塞，請稍後再試。",
     returnToMain: "返回大廳",
+    backToMenu: "返回主選單",
     loadingDemo: "正在載入訪客模式...",
     reportPlaceholder: "請在此用德語撰寫...",
     dispatching: "正在發送...",
