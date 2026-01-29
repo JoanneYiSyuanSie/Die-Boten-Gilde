@@ -173,7 +173,7 @@ export const EpilogueView: React.FC = () => {
 
                 <div className="space-y-8">
                     {isCampaign && (
-                        <div className="relative aspect-video w-full rounded border-4 border-[#2c1810] shadow-xl bg-black/10 flex items-center justify-center overflow-hidden">
+                        <div className="relative aspect-video w-full rounded border-4 border-[#2c1810] shadow-xl bg-black/10 flex items-center justify-center overflow-hidden group">
                             {isGeneratingImg ? (
                                 <div className="flex flex-col items-center animate-pulse">
                                     <div className="text-4xl mb-2">🎨</div>
@@ -181,14 +181,36 @@ export const EpilogueView: React.FC = () => {
                                 </div>
                             ) : illustrationUrl ? (
                                 <img src={illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
-                            ) : mission?.illustrationUrl ? (
-                                <img src={mission.illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
                             ) : isDemo ? (
                                 <div className="text-center opacity-50 p-4">
                                     <div className="text-4xl mb-2">🖼️</div>
                                     <div className="text-sm font-fantasy">Illustrations are disabled in Demo Mode</div>
                                 </div>
-                            ) : null}
+                            ) : (
+                                <div className="text-center opacity-50 p-4 flex flex-col items-center gap-2">
+                                    <div className="text-4xl mb-2">🎨</div>
+                                    <div className="text-sm font-fantasy">{t.paintingIllustration}</div>
+                                    {isCampaign && settings.apiKey && (
+                                        <FantasyButton
+                                            onClick={() => {
+                                                setIsGeneratingImg(true);
+                                                generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished")
+                                                    .then(url => {
+                                                        setGameState(prev => ({ ...prev, illustrationUrl: url }));
+                                                        setIsGeneratingImg(false);
+                                                    })
+                                                    .catch(e => {
+                                                        console.error(e);
+                                                        setIsGeneratingImg(false);
+                                                    });
+                                            }}
+                                            className="text-xs"
+                                        >
+                                            Paint Scene
+                                        </FantasyButton>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -229,7 +251,7 @@ export const EpilogueView: React.FC = () => {
                         <FantasyButton onClick={resetGame}>{t.returnToHall}</FantasyButton>
                     </div>
                 </div>
-            </ParchmentContainer>
-        </div>
+            </ParchmentContainer >
+        </div >
     );
 };

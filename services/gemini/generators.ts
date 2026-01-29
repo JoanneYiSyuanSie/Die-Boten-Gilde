@@ -36,6 +36,8 @@ export const generateMission = async (apiKey: string, level: CEFRLevel, topic: s
      - ROLES: [${roles}]
      - BACKGROUNDS: [${backgrounds}]
      - PERSONALITIES: [${personalities}]
+  3. 'npcVoice': Must be exactly one of: 'Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr'.
+  4. 'npcName' MUST match the name used in 'initialStatement'. If the NPC introduces themselves, use the same name.
   
   Stage 3: A written report to the Guild Master.
   

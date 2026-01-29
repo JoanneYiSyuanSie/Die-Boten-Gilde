@@ -18,6 +18,8 @@ export const Level1View: React.FC = () => {
     const t = translations[settings.language];
     const isDemo = !!mission?.negotiation?.script;
 
+    const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
+
     useEffect(() => {
         // In demo mode, if no real audio, generate silence to show the player UI
         if (isDemo && !audioUrl) {
@@ -29,6 +31,23 @@ export const Level1View: React.FC = () => {
             return () => URL.revokeObjectURL(url);
         }
     }, [isDemo, audioUrl]);
+
+    const handleGenerateAudio = async () => {
+        if (!settings.apiKey || !mission.decryptedMessage?.fullText) return;
+        setIsGeneratingAudio(true);
+        try {
+            // Import dynamically or check imports. Level1View currently imports pcmToWav. 
+            // I need to add generateTTS to imports.
+            const { generateTTS } = await import('../../services/geminiService');
+            const url = await generateTTS(settings.apiKey, mission.decryptedMessage.fullText);
+            setGameState(prev => ({ ...prev, audioUrl: url }));
+        } catch (e) {
+            console.error("Audio generation failed", e);
+            alert("Faield to generate audio. Please check API Key.");
+        } finally {
+            setIsGeneratingAudio(false);
+        }
+    };
 
     if (!mission || !mission.decryptedMessage || !mission.decryptedMessage.segments) {
         return (
@@ -126,8 +145,17 @@ export const Level1View: React.FC = () => {
                 </div>
                 <p className="italic text-center mb-4 text-sm opacity-80">{mission.scenarioDescription}</p>
 
-                <div className="flex justify-center mb-6">
+                <div className="flex flex-col items-center justify-center mb-6 gap-2">
                     <AudioPlayer src={audioUrl || demoAudioUrl} className="w-full max-w-md" />
+                    {!audioUrl && !isDemo && settings.apiKey && (
+                        <FantasyButton
+                            onClick={handleGenerateAudio}
+                            disabled={isGeneratingAudio}
+                            className="text-xs py-1 px-3 opacity-80"
+                        >
+                            {isGeneratingAudio ? "Generating Audio..." : "Generate Audio"}
+                        </FantasyButton>
+                    )}
                 </div>
 
                 {/* CLOZE SECTION */}

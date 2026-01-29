@@ -85,10 +85,14 @@ export const evaluateReport = async (apiKey: string, report: string, level: CEFR
     const client = new GoogleGenAI({ apiKey });
 
     const metaLang = getInterfaceLangName(interfaceLang);
+    const constraints = getLevelConstraints(level);
     const prompt = `Evaluate this player report: "${report}". Target Level ${level}.
     
     1. 'score': 0-100 based on grammar and completion.
-    2. 'outcome': The narrative conclusion of the story (RPG style) in GERMAN. Matches Target Level ${level}. What happened after the report was submitted?
+    2. 'outcome': The narrative conclusion of the story (RPG style) in GERMAN.
+       - CONSTRAINT: The German text MUST be simple and match Target Level ${level}.
+       - ${constraints}
+       - What happened after the report was submitted?
     3. 'corrections': Linguistic feedback, grammar corrections, and style suggestions in German.`;
 
     const response = await client.models.generateContent({

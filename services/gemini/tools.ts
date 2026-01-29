@@ -17,7 +17,9 @@ export const generateTTS = async (apiKey: string, text: string, voiceName: strin
   const client = new GoogleGenAI({ apiKey });
 
   const validVoices = ['Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr'];
-  const voice = validVoices.includes(voiceName) ? voiceName : 'Puck';
+  // Case-insensitive match
+  const matchedVoice = validVoices.find(v => v.toLowerCase() === voiceName.toLowerCase());
+  const voice = matchedVoice || 'Puck';
 
   const cleanText = text
     .replace(/\*.*?\*/g, '')
