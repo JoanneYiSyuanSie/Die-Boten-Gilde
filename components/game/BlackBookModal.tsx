@@ -35,6 +35,7 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
 
     // Filtering State
     const [activeFilter, setActiveFilter] = useState<string>('ALL');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
 
@@ -45,9 +46,26 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
     }, [words]);
 
     const filteredWords = useMemo(() => {
-        if (activeFilter === 'ALL') return words;
-        return words.filter(w => w.tags?.includes(activeFilter));
-    }, [words, activeFilter]);
+        let result = words;
+
+        // 1. Tag Filter
+        if (activeFilter !== 'ALL') {
+            result = result.filter(w => w.tags?.includes(activeFilter));
+        }
+
+        // 2. Search Query
+        if (searchQuery.trim()) {
+            const lowerQuery = searchQuery.toLowerCase();
+            result = result.filter(w =>
+                w.word.toLowerCase().includes(lowerQuery) ||
+                w.context?.toLowerCase().includes(lowerQuery) ||
+                w.notes?.toLowerCase().includes(lowerQuery) ||
+                w.tags?.some(tag => tag.toLowerCase().includes(lowerQuery))
+            );
+        }
+
+        return result;
+    }, [words, activeFilter, searchQuery]);
 
     // --- Dictionary Links Helper ---
     // Already imported from utils/dictionaryUtils
@@ -186,6 +204,26 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
         <div className="space-y-4">
             {!isAdding && !editingId && (
                 <div className="flex flex-col gap-4">
+                    {/* Search Bar */}
+                    <div className="relative">
+                        <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2c1810]/40 w-4 h-4" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={t.searchPlaceholder || "Search..."}
+                            className="w-full pl-9 pr-4 py-2 bg-white/40 border border-[#2c1810]/20 rounded-full text-sm text-[#2c1810] focus:outline-none focus:bg-white/60 focus:border-[#8a1c1c] transition-colors"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2c1810]/40 hover:text-[#8a1c1c]"
+                            >
+                                <Icons.Cross className="w-3 h-3" />
+                            </button>
+                        )}
+                    </div>
+
                     {/* Action Bar: Add & Filter */}
                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide border-b border-[#2c1810]/10 items-center">
                         <button
@@ -289,83 +327,117 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
         setEditingBlackBookId(null);
     };
 
+    const filteredBlackBookEntries = useMemo(() => {
+        if (!searchQuery.trim()) return blackBookEntries;
+        const lowerQuery = searchQuery.toLowerCase();
+        return blackBookEntries.filter(entry =>
+            (entry.original && entry.original.toLowerCase().includes(lowerQuery)) ||
+            (entry.correction && entry.correction.toLowerCase().includes(lowerQuery)) ||
+            (entry.note && entry.note.toLowerCase().includes(lowerQuery))
+        );
+    }, [blackBookEntries, searchQuery]);
+
     const renderBlackBook = () => (
         <div className="space-y-4">
-            {blackBookEntries.length === 0 && (
-                <p className="text-center italic opacity-50 mt-10">{t.emptyBlackBook}</p>
-            )}
-            {blackBookEntries.map(entry => (
-                <div key={entry.id} className="p-4 bg-black/5 border border-[#2c1810]/20 rounded relative group">
-                    {editingBlackBookId === entry.id ? (
-                        <div className="space-y-3 animate-in fade-in">
-                            <div>
-                                <label className="text-[10px] uppercase font-bold text-[#8a1c1c]">{t.yourAttempt}</label>
-                                <textarea
-                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-serif"
-                                    value={editForm.original}
-                                    onChange={e => setEditForm(prev => ({ ...prev, original: e.target.value }))}
-                                />
-                            </div>
-                            <div>
-                                <label className="text-[10px] uppercase font-bold text-green-800">{t.correctionAdvice}</label>
-                                <textarea
-                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-mono"
-                                    value={editForm.correction}
-                                    onChange={e => setEditForm(prev => ({ ...prev, correction: e.target.value }))}
-                                />
-                            </div>
-                            <div>
-                                <label className="text-[10px] uppercase font-bold text-gray-500">{t.note}</label>
-                                <input
-                                    className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white"
-                                    value={editForm.note}
-                                    onChange={e => setEditForm(prev => ({ ...prev, note: e.target.value }))}
-                                />
-                            </div>
-                            <div className="flex justify-end gap-2 pt-2">
-                                <button onClick={() => setEditingBlackBookId(null)} className="px-3 py-1 text-xs font-bold text-[#2c1810] hover:bg-black/5 rounded">{t.cancel}</button>
-                                <button onClick={saveBlackBookEdit} className="px-3 py-1 text-xs font-bold text-[#f3e5ab] bg-[#8a1c1c] rounded shadow hover:bg-[#a62424]">{t.saveChanges}</button>
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            {entry.original && (
-                                <div className="mb-2 bg-[#8a1c1c]/5 p-2 rounded border border-[#8a1c1c]/10">
-                                    <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">{t.yourAttempt}</span>
-                                    <span className="font-serif italic text-[#2c1810]">{entry.original}</span>
-                                </div>
-                            )}
-                            {entry.correction && (
-                                <div className="mb-2">
-                                    <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">{t.correctionAdvice}</span>
-                                    <span className="font-mono text-xs text-[#2c1810] whitespace-pre-wrap">{entry.correction}</span>
-                                </div>
-                            )}
-                            {entry.note && (
-                                <div className="text-xs text-gray-500 italic mt-2 pt-2 border-t border-black/5">
-                                    <span className="font-bold">{t.note}:</span> {entry.note}
-                                </div>
-                            )}
-                            <div className="absolute top-2 right-2 flex gap-1 bg-white/80 rounded shadow-sm">
-                                <button
-                                    onClick={() => startEditingBlackBook(entry)}
-                                    className="text-blue-800 hover:text-blue-600 p-1"
-                                    title={t.editEntry}
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                                </button>
-                                <button
-                                    onClick={() => removeFromBlackBook(entry.id)}
-                                    className="text-gray-400 hover:text-red-800 p-1"
-                                    title={t.delete}
-                                >
-                                    <Icons.Cross className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </>
+            {/* Search Bar (Black Book) */}
+            {!editingBlackBookId && (
+                <div className="relative mb-2">
+                    <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2c1810]/40 w-4 h-4" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={t.searchPlaceholder || "Search..."}
+                        className="w-full pl-9 pr-4 py-2 bg-white/40 border border-[#2c1810]/20 rounded-full text-sm text-[#2c1810] focus:outline-none focus:bg-white/60 focus:border-[#8a1c1c] transition-colors"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2c1810]/40 hover:text-[#8a1c1c]"
+                        >
+                            <Icons.Cross className="w-3 h-3" />
+                        </button>
                     )}
                 </div>
-            ))}
+            )}
+
+            {blackBookEntries.length === 0 ? (
+                <p className="text-center italic opacity-50 mt-10">{t.emptyBlackBook}</p>
+            ) : filteredBlackBookEntries.length === 0 ? (
+                <p className="text-center italic opacity-50 mt-10">{t.emptyGrimoire || "No matches found."}</p>
+            ) : (
+                filteredBlackBookEntries.map(entry => (
+                    <div key={entry.id} className="p-4 bg-black/5 border border-[#2c1810]/20 rounded relative group">
+                        {editingBlackBookId === entry.id ? (
+                            <div className="space-y-3 animate-in fade-in">
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-[#8a1c1c]">{t.yourAttempt}</label>
+                                    <textarea
+                                        className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-serif"
+                                        value={editForm.original}
+                                        onChange={e => setEditForm(prev => ({ ...prev, original: e.target.value }))}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-green-800">{t.correctionAdvice}</label>
+                                    <textarea
+                                        className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white font-mono"
+                                        value={editForm.correction}
+                                        onChange={e => setEditForm(prev => ({ ...prev, correction: e.target.value }))}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase font-bold text-gray-500">{t.note}</label>
+                                    <input
+                                        className="w-full p-2 text-sm border border-[#2c1810]/30 rounded bg-white"
+                                        value={editForm.note}
+                                        onChange={e => setEditForm(prev => ({ ...prev, note: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="flex justify-end gap-2 pt-2">
+                                    <button onClick={() => setEditingBlackBookId(null)} className="px-3 py-1 text-xs font-bold text-[#2c1810] hover:bg-black/5 rounded">{t.cancel}</button>
+                                    <button onClick={saveBlackBookEdit} className="px-3 py-1 text-xs font-bold text-[#f3e5ab] bg-[#8a1c1c] rounded shadow hover:bg-[#a62424]">{t.saveChanges}</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                {entry.original && (
+                                    <div className="mb-2 bg-[#8a1c1c]/5 p-2 rounded border border-[#8a1c1c]/10">
+                                        <span className="text-[10px] uppercase font-bold text-red-800 tracking-widest block mb-1">{t.yourAttempt}</span>
+                                        <span className="font-serif italic text-[#2c1810]">{entry.original}</span>
+                                    </div>
+                                )}
+                                {entry.correction && (
+                                    <div className="mb-2">
+                                        <span className="text-[10px] uppercase font-bold text-green-800 tracking-widest block mb-1">{t.correctionAdvice}</span>
+                                        <span className="font-mono text-xs text-[#2c1810] whitespace-pre-wrap">{entry.correction}</span>
+                                    </div>
+                                )}
+                                {entry.note && (
+                                    <div className="text-xs text-gray-500 italic mt-2 pt-2 border-t border-black/5">
+                                        <span className="font-bold">{t.note}:</span> {entry.note}
+                                    </div>
+                                )}
+                                <div className="absolute top-2 right-2 flex gap-1 bg-white/80 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => startEditingBlackBook(entry)}
+                                        className="text-blue-800 hover:text-blue-600 p-1"
+                                        title={t.editEntry}
+                                    >
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                    </button>
+                                    <button
+                                        onClick={() => removeFromBlackBook(entry.id)}
+                                        className="text-gray-400 hover:text-red-800 p-1"
+                                        title={t.delete}
+                                    >
+                                        <Icons.Cross className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )))}
         </div>
     );
 
@@ -375,14 +447,14 @@ export const BlackBookModal: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 <div className="flex justify-between items-center mb-4 border-b-2 border-[#2c1810] pb-2">
                     <div className="flex gap-4 items-end">
                         <button
-                            onClick={() => { setActiveTab('grimoire'); handleCancel(); }}
+                            onClick={() => { setActiveTab('grimoire'); handleCancel(); setSearchQuery(''); }}
                             className={`text-2xl md:text-3xl font-fantasy font-bold transition-all text-button ${activeTab === 'grimoire' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
                         >
                             {t.tabGrimoire}
                         </button>
                         <span className="text-3xl font-fantasy text-[#2c1810]/20"> </span>
                         <button
-                            onClick={() => { setActiveTab('blackbook'); handleCancel(); }}
+                            onClick={() => { setActiveTab('blackbook'); handleCancel(); setSearchQuery(''); }}
                             className={`text-2xl md:text-3xl font-fantasy font-bold transition-all text-button ${activeTab === 'blackbook' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
                         >
                             {t.tabBlackBook}

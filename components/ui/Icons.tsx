@@ -24,7 +24,8 @@ import {
   Turtle,
   ArrowLeft,
   Gift,
-  Lock
+  Lock,
+  Search
 } from 'lucide-react';
 
 // Exporting Lucide components mapped to the names used in the app.
@@ -57,5 +58,6 @@ export const Icons = {
   Turtle: Turtle,
   ArrowLeft: ArrowLeft,
   Gift: Gift,
-  Lock: Lock
+  Lock: Lock,
+  Search: Search
 };

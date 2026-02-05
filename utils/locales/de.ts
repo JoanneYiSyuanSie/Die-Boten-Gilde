@@ -105,6 +105,7 @@ export const de = {
     notesPlaceholder: "Definition oder Übersetzung...",
     tags: "Tags",
     tagsPlaceholder: "Nomen, Verben, Schwer...",
+    searchPlaceholder: "Suchen...",
     externalDictionaries: "Externe Wörterbücher",
     delete: "Löschen",
     close: "Schließen",
@@ -113,7 +114,6 @@ export const de = {
     abandonMission: "Mission abbrechen",
     confirmAbandon: "Möchten Sie die Mission wirklich aufgeben und zur Halle zurückkehren? Der Fortschritt geht verloren.",
     spyFailedReport: "Spion antwortet nicht...",
-    analyzeWord: "✨ AI Analyse",
     analyzing: "Analysiere...",
 
     // Instructions (Titles only, content moved to content/lore.ts)
