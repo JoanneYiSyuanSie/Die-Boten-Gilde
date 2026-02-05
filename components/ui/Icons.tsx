@@ -21,7 +21,10 @@ import {
   Crown,
   HelpCircle,
   ChevronDown,
-  Turtle
+  Turtle,
+  ArrowLeft,
+  Gift,
+  Lock
 } from 'lucide-react';
 
 // Exporting Lucide components mapped to the names used in the app.
@@ -51,5 +54,8 @@ export const Icons = {
   Compass: Compass,
   Crown: Crown,
   Default: HelpCircle,
-  Turtle: Turtle
+  Turtle: Turtle,
+  ArrowLeft: ArrowLeft,
+  Gift: Gift,
+  Lock: Lock
 };

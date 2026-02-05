@@ -1,0 +1,88 @@
+{
+  "id": "dlc_example_01",
+  "typeCode": "EX01",
+  "mode": "TRAINING",
+  "audioFileName": "dlc_example_01_audio.mp3",
+  "manifest": {
+    "displayTitle": {
+      "de": "Die verlorene Handschrift",
+      "zh": "遺失的手稿"
+    },
+    "summary": {
+      "de": "Ein Abenteuer in einem alten Kloster. Finde das geheime Buch!",
+      "zh": "在一座古老修道院的冒險。找出那本秘密之書！"
+    },
+    "tags": [
+      "History",
+      "Mystery"
+    ],
+    "estimatedPlaytime": "45 min"
+  },
+  "content": {
+    "level": "A2",
+    "title": "Die verlorene Handschrift",
+    "scenarioDescription": "你在修道院的廢墟中發現了一份古老手稿的殘頁，似乎指向一個隱藏的圖書館...",
+    "minWordCount": 80,
+    "decryptedMessage": {
+      "fullText": "Das alte Buch liegt in der Bibliothek. Es ist sehr wertvoll und enthält geheimes Wissen über die Sterne.",
+      "segments": [
+        {
+          "id": "s1",
+          "textBefore": "Das alte Buch liegt in ",
+          "answer": "der Bibliothek",
+          "distractors": [
+            "der Küche",
+            "dem Schlafzimmer",
+            "dem Garten"
+          ],
+          "textAfter": ". Es ist sehr wertvoll und enthält geheimes Wissen über die Sterne."
+        }
+      ],
+      "readingQuestions": [
+        {
+          "id": "q1",
+          "question": "Wo liegt das Buch?",
+          "correctAnswer": "In der Bibliothek",
+          "options": [
+            "In der Bibliothek",
+            "In der Küche",
+            "Im Garten",
+            "Im Wald"
+          ]
+        }
+      ]
+    },
+    "negotiation": {
+      "npcName": "Bruder Johannes",
+      "npcRole": "Bibliothekar",
+      "initialStatement": "Halt! Der Zutritt zur Bibliothek ist verboten. Was suchst du hier?",
+      "initialStatementTranslation": "站住！圖書館禁止進入。你在這裡找什麼？",
+      "objectives": [
+        {
+          "id": "obj1",
+          "description": "Erkläre dem Mönch, dass du ein Gelehrter bist",
+          "isMain": true
+        },
+        {
+          "id": "obj2",
+          "description": "Frage nach dem Sternenmanuskript",
+          "isMain": false
+        }
+      ],
+      "npcAttributes": {
+        "roleId": "SCHOLAR",
+        "backgroundId": "COMMONER",
+        "personalityId": "STRICT"
+      }
+    },
+    "reportPrompt": "請撰寫一份報告給公爵，描述你在修道院圖書館的發現，以及這位修士的情況。",
+    "historicalFact": {
+      "title": "中世紀圖書館",
+      "content": {
+        "de": "Im Mittelalter waren Bücher sehr teuer und selten. Klöster waren die wichtigsten Orte für die Bewahrung von Wissen.",
+        "zh": "在中世紀，書籍非常昂貴且稀有。修道院是保存知識最重要的場所，修士們會花費數年時間手工抄寫書籍。"
+      },
+      "source": "Die Geschichte der Bibliotheken, 2024"
+    }
+  }
+}

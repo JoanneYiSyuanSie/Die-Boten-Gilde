@@ -4,7 +4,8 @@ import { useGame } from '../../contexts/GameContext';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useGuild } from '../../contexts/GuildContext';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
-import { evaluateNegotiation, generateTTS, translateText } from '../../services/geminiService';
+import { useTTS } from '../../hooks/useTTS';
+import { evaluateNegotiation, translateText } from '../../services/geminiService';
 import { FantasyButton } from '../ui/FantasyButton';
 import { ParchmentContainer } from '../ui/ParchmentContainer';
 import { HistoricalNote } from '../ui/HistoricalNote';
@@ -67,7 +68,14 @@ export const Level2View: React.FC = () => {
 
     useEffect(() => {
         if (mission?.negotiation && chatHistory.length === 0) {
-            appendMessage({ role: 'npc', text: mission.negotiation.initialStatement });
+            setGameState(prev => {
+                // strict mode guard: if already added, don't add again
+                if (prev.chatHistory.length > 0) return prev;
+                return {
+                    ...prev,
+                    chatHistory: [...prev.chatHistory, { role: 'npc', text: mission.negotiation.initialStatement }]
+                };
+            });
         }
     }, [mission, chatHistory.length]);
 
@@ -126,13 +134,27 @@ export const Level2View: React.FC = () => {
         cacheAudio(index, url);
     };
 
+    const { speak } = useTTS();
+
     const generateAudioForMessage = async (index: number, text: string) => {
         setLoadingAudioIndices(prev => new Set(prev).add(index));
         setFailedAudioIndices(prev => { const s = new Set(prev); s.delete(index); return s; });
         try {
             const voice = mission?.negotiation?.npcVoice || 'Puck';
-            const url = await generateTTS(settings.apiKey, text, voice);
-            cacheAudio(index, url);
+            const url = await speak(text, voice);
+
+            if (url) {
+                // Gemini returned a URL
+                cacheAudio(index, url);
+            } else {
+                // Browser TTS played directly (returned null)
+                // We mark it as "cached" with a dummy value so UI knows it was handled/played
+                // But we set autoPlay=false for this specific index in render to avoid re-triggering? 
+                // Actually, if speak() plays it immediately, we don't need to mount an <AudioPlayer>. 
+                // Let's use a special marker for "sys_tts_played"
+                cacheAudio(index, "sys_tts_played");
+            }
+
         } catch (e: any) {
             // Only log and mark as failed if it's NOT a known "safe" error (like empty text or API refusal)
             if (e.message !== "Text empty after sanitization") {
@@ -494,6 +516,18 @@ export const Level2View: React.FC = () => {
                                             <div className="mt-2 md:mt-3 pt-2 border-t border-black/10 flex items-center justify-between gap-3">
                                                 {isAudioLoading ? (
                                                     <span className="text-[10px] text-gray-400">{t.loadingAudio}</span>
+                                                ) : hasAudio && audioCache[i] === "sys_tts_played" ? (
+                                                    // Browser TTS Replay Button
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            speak(msg.text, mission?.negotiation?.npcVoice);
+                                                        }}
+                                                        className="text-[10px] text-[#8a1c1c] uppercase font-bold hover:underline flex items-center gap-1 border border-[#8a1c1c]/30 px-2 py-1 rounded hover:bg-[#8a1c1c]/10"
+                                                        title="Play using Browser Voice"
+                                                    >
+                                                        <span>🔊 {t.replay || "Replay"}</span>
+                                                    </button>
                                                 ) : hasAudio ? (
                                                     <AudioPlayer src={audioCache[i]} className="scale-75 origin-left" autoPlay={shouldAutoPlay} minimal={true} />
                                                 ) : isAudioFailed ? (

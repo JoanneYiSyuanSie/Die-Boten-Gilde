@@ -12,7 +12,7 @@ export interface ShopItem {
   description: LocalizedText;
   cost: number;
   iconKey: string;
-  type: 'consumable' | 'origin' | 'theme' | 'badge' | 'chronicle';
+  type: 'consumable' | 'origin' | 'theme' | 'badge' | 'chronicle' | 'container' | 'dlc_item';
   effect?: string;
   strength?: LocalizedText;
   weakness?: LocalizedText;
@@ -20,6 +20,7 @@ export interface ShopItem {
   cssClass?: string;
   badgeId?: string;
   allowedPhases?: GamePhase[];
+  containerId?: string;
 }
 
 export const SHOP_ITEMS: ShopItem[] = [
@@ -177,12 +178,12 @@ export const SHOP_ITEMS: ShopItem[] = [
   {
     id: 'theme_blueprint',
     name: {
-        de: 'Preußische Ingenieurskunst',
-        zh: '普魯士工程藍圖'
+      de: 'Preußische Ingenieurskunst',
+      zh: '普魯士工程藍圖'
     },
     description: {
-        de: 'Präzision und Fortschritt. Weiße Linien auf tiefblauem Grund, entworfen für die Maschinen des 19. Jahrhunderts.',
-        zh: '精準與進步的象徵。深藍底色上的白色線條，彷彿置身於 19 世紀的蒸汽機械設計室。'
+      de: 'Präzision und Fortschritt. Weiße Linien auf tiefblauem Grund, entworfen für die Maschinen des 19. Jahrhunderts.',
+      zh: '精準與進步的象徵。深藍底色上的白色線條，彷彿置身於 19 世紀的蒸汽機械設計室。'
     },
     cost: 800,
     iconKey: 'Map',
@@ -192,12 +193,12 @@ export const SHOP_ITEMS: ShopItem[] = [
   {
     id: 'theme_black_forest',
     name: {
-        de: 'Mythen des Schwarzwalds',
-        zh: '黑森林傳說'
+      de: 'Mythen des Schwarzwalds',
+      zh: '黑森林傳說'
     },
     description: {
-        de: 'Tiefes Grün der Tannen und die Dunkelheit alter Sagen. Ein Interface für jene, die die Wildnis nicht fürchten.',
-        zh: '冷杉的深綠與古老傳說的幽暗。這是為那些不畏懼荒野之人所設計的介面。'
+      de: 'Tiefes Grün der Tannen und die Dunkelheit alter Sagen. Ein Interface für jene, die die Wildnis nicht fürchten.',
+      zh: '冷杉的深綠與古老傳說的幽暗。這是為那些不畏懼荒野之人所設計的介面。'
     },
     cost: 700,
     iconKey: 'Compass',
@@ -254,5 +255,54 @@ export const SHOP_ITEMS: ShopItem[] = [
     iconKey: 'Crown',
     type: 'badge',
     badgeId: 'postal_legend'
+  },
+
+  // ==========================================
+  // 6. DLC & Containers (New)
+  // ==========================================
+  {
+    id: 'item_story_book',
+    name: {
+      de: 'Das Buch der Geschichten',
+      zh: '故事之書'
+    },
+    description: {
+      de: 'Ein altes Buch mit leeren Seiten, die darauf warten, gefüllt zu werden.',
+      zh: '一本古老的書，空白的書頁等待著新的故事被填寫。'
+    },
+    cost: 0,
+    iconKey: 'Book', // Needs distinct icon ideally
+    type: 'container',
+    allowedPhases: [GamePhase.MENU, GamePhase.LEVEL_1, GamePhase.LEVEL_2, GamePhase.LEVEL_3, GamePhase.EPILOGUE]
+  },
+  {
+    id: 'dlc_item_demo',
+    name: {
+      de: 'Der verlorene Brief',
+      zh: '失落的信件 (Demo DLC)'
+    },
+    description: {
+      de: 'Eine kurze Geschichte über einen Brief, der nie ankam.',
+      zh: '關於一封從未送達的信件的短篇故事。'
+    },
+    cost: 0,
+    iconKey: 'Scroll',
+    type: 'dlc_item',
+    containerId: 'item_story_book'
+  },
+  {
+    id: 'dlc_example_01',
+    name: {
+      de: 'Die verlorene Handschrift',
+      zh: '遺失的手稿'
+    },
+    description: {
+      de: 'Ein Abenteuer in einem alten Kloster. Finde das geheime Buch!',
+      zh: '在一座古老修道院的冒險。找出那本秘密之書！'
+    },
+    cost: 0,
+    iconKey: 'Scroll',
+    type: 'dlc_item',
+    containerId: 'item_story_book'
   }
 ];

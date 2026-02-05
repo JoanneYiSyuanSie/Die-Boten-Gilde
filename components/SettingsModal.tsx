@@ -221,8 +221,12 @@ export const SettingsModal: React.FC<{ onClose: () => void, onStartDemo: () => v
       <div>
         <label className="block font-bold mb-1">
           {t.targetProficiency}
-          {isMissionActive && <span className="text-[10px] text-red-700 ml-2 font-normal uppercase">(Locked during mission)</span>}
         </label>
+        {isMissionActive && (
+          <div className="text-[10px] text-red-700 mb-1 font-normal uppercase animate-pulse">
+            {t.lockedDuringMission || "(Locked during mission)"}
+          </div>
+        )}
         <select
           value={level}
           onChange={(e) => setLevel(e.target.value as CEFRLevel)}
@@ -286,10 +290,10 @@ export const SettingsModal: React.FC<{ onClose: () => void, onStartDemo: () => v
   );
 
   const renderMissionTab = () => (
-    <div className="space-y-6 text-center py-6 animate-in fade-in">
-      <div className="p-4 bg-red-900/10 rounded border border-red-900/20">
-        <h3 className="font-fantasy font-bold text-xl text-[#8a1c1c] mb-2">{t.abandonMission}</h3>
-        <p className="text-sm text-[#2c1810] mb-4">{t.abandonWarning || "Are you sure you want to abandon the current mission? Progress will be lost."}</p>
+    <div className="h-full flex flex-col justify-center items-center space-y-6 text-center py-6 animate-in fade-in">
+      <div className="p-8 bg-red-900/10 rounded border border-red-900/20 w-full max-w-sm mx-auto">
+        <h3 className="font-fantasy font-bold text-2xl text-[#8a1c1c] mb-4">{t.abandonMission}</h3>
+        <p className="text-base text-[#2c1810] mb-6 leading-relaxed">{t.abandonWarning || "Are you sure you want to abandon the current mission? Progress will be lost."}</p>
 
         <button
           onClick={handleAbandon}
@@ -303,20 +307,20 @@ export const SettingsModal: React.FC<{ onClose: () => void, onStartDemo: () => v
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <ParchmentContainer className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="border-b-2 border-black/20 pb-2 mb-4 flex justify-between items-center">
+      <ParchmentContainer className="w-full max-w-xl h-[650px] overflow-hidden flex flex-col">
+        <div className="border-b-2 border-black/20 pb-2 mb-4 flex justify-between items-center shrink-0">
           {isMissionActive ? (
-            <div className="flex gap-4 items-end">
+            <div className="flex gap-3 items-end">
               <button
                 onClick={() => setActiveTab('certificate')}
-                className={`text-xl md:text-2xl font-fantasy font-bold transition-all text-button ${activeTab === 'certificate' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
+                className={`text-xl font-fantasy font-bold transition-all text-button whitespace-nowrap ${activeTab === 'certificate' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
               >
                 {t.guildRegistration}
               </button>
               <span className="text-2xl font-fantasy text-[#2c1810]/20">/</span>
               <button
                 onClick={() => setActiveTab('mission')}
-                className={`text-xl md:text-2xl font-fantasy font-bold transition-all text-button ${activeTab === 'mission' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
+                className={`text-xl font-fantasy font-bold transition-all text-button whitespace-nowrap ${activeTab === 'mission' ? 'text-[#8a1c1c] scale-105' : 'text-[#2c1810]/40 hover:text-[#2c1810]/70'}`}
               >
                 {t.missionStatus || "Mission"}
               </button>
@@ -325,12 +329,14 @@ export const SettingsModal: React.FC<{ onClose: () => void, onStartDemo: () => v
             <h2 className="text-2xl font-fantasy font-bold">{t.guildRegistration}</h2>
           )}
 
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/10 transition shrink-0">
             <Icons.Cross className="w-6 h-6" />
           </button>
         </div>
 
-        {activeTab === 'certificate' ? renderCertificateTab() : renderMissionTab()}
+        <div className="flex-1 overflow-y-auto pr-1">
+          {activeTab === 'certificate' ? renderCertificateTab() : renderMissionTab()}
+        </div>
 
       </ParchmentContainer>
     </div>

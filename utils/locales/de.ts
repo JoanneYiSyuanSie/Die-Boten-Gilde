@@ -9,8 +9,9 @@ export const de = {
     guildSettings: "Gilde-Einstellungen",
     guildRegistration: "Gildenregistrierung",
     apiKeyLabel: "Gemini API-Schlüssel",
-    interfaceLanguage: "Schnittstellensprache",
-    targetProficiency: "Ziel-Sprachniveau",
+    interfaceLanguage: "Sprache",
+    targetProficiency: "Sprachniveau",
+    lockedDuringMission: "(Mission aktiv - gesperrt)",
     missionStatus: "Missionsstatus", // Added key
     abandonWarning: "Möchten Sie die Mission wirklich aufgeben? Der Fortschritt geht verloren.",
     signAndSeal: "Unterzeichnen & Siegeln",
@@ -33,12 +34,34 @@ export const de = {
     inventory: "Botentasche",
     collection: "Sammlung",
     emptyInventory: "Dein Rucksack ist leer.",
-    guildChronicles: "Gildenchronik",
-    chronicleBookTitle: "Die Chronik der Gilde",
-    tableOfContents: "Inhaltsverzeichnis",
-    chapterLocked: "Verschlossen",
-    visitShop: "Im Handelsposten erhältlich",
+    guildChronicles: "Erinnerungen", // Shortened from Erinnerungsfragmente
+    chronicleBookTitle: "Erinnerungen",
+    tabMainStory: "Der Pfad (Haupt)",
+    tabSideStory: "Gerüchte (Neben)",
+    tableOfContents: "Inhalt",
+    chapterLocked: "Gesperrt",
+    visitShop: "Im Laden kaufen",
     read: "Lesen",
+    dlcBoxTitle: "Schatztruhe",
+    openDlcBox: "Öffnen",
+
+    // Collection & Status
+    defaultTheme: "Standard",
+    active: "Aktiv",
+    equip: "Ausrüsten",
+    equipped: "Ausgerüstet",
+    unlocked: "Freigeschaltet",
+
+    // Shop Categories
+    shopCategory: {
+        consumable: "Verbrauchsgüter",
+        origin: "Herkunft",
+        theme: "Design",
+        badge: "Abzeichen",
+        chronicle: "Erinnerungen"
+    },
+
+    requiresLevel: "Benötigt Level {level}",
 
     // Inventory Action
     useItem: "Benutzen",
@@ -131,8 +154,10 @@ export const de = {
     // Epilogue
     missionComplete: "Aufgabe Erledigt",
     trainingComplete: "Tageswerk vollbracht",
+    trainingNoScore: "Übung macht den Meister. Keine Wertung.",
     finalGrade: "Rang",
     finalTrustScore: "Abschluss-Stimmung",
+    finalTrust: "Stimmung",
     reportScore: "Bericht-Ergebnis",
     trainingScore: "Training-Ergebnis",
     outcome: "Ergebnis",
@@ -179,6 +204,7 @@ export const de = {
     hideInfo: "Info ausblenden",
     role: "Rolle",
     loadingAudio: "Lade Audio...",
+    replay: "Wiederholen",
     retry: "Wiederholen",
     ready: "Bereit",
     translate: "Übersetzen",

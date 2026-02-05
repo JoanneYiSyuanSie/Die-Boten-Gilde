@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { GuildProfile, BlackBookEntry } from '../types';
 import { loadProfile, saveProfile, loadBlackBook, saveBlackBook } from '../utils/storageUtils';
 import { ShopItem, SHOP_ITEMS } from '../constants/shopItems';
+import { validateLicenseKey } from '../utils/licenseUtils';
 
 interface GuildContextType {
   profile: GuildProfile;
@@ -16,6 +17,7 @@ interface GuildContextType {
   removeFromBlackBook: (id: string) => void;
   updateBlackBookEntry: (id: string, updates: Partial<BlackBookEntry>) => void;
   importGuildData: (newProfile: GuildProfile, newBlackBook: BlackBookEntry[]) => void;
+  redeemLicense: (key: string) => { success: boolean; error?: string };
 }
 
 const GuildContext = createContext<GuildContextType | undefined>(undefined);
@@ -119,6 +121,50 @@ export const GuildProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     saveProfile(newProfile);
     setBlackBookEntries(newBlackBook);
     saveBlackBook(newBlackBook);
+    saveBlackBook(newBlackBook);
+  };
+
+  const redeemLicense = (key: string): { success: boolean; error?: string } => {
+    // 1. Validate the key format and checksum
+    const { valid, itemId, error } = validateLicenseKey(key);
+
+    if (!valid || !itemId) {
+      return { success: false, error: error || 'invalid_key' };
+    }
+
+    // 2. Check if already owned (Unique Item Logic)
+    // For DLC items, usually we only need one copy.
+    // If it's a "consumable", we might allow multiple, but typically DLC is one-time.
+
+    // Check Unlocked Rewards first (Origins/Themes)
+    if (profile.unlockedRewards.includes(itemId)) {
+      return { success: false, error: 'already_owned' };
+    }
+
+    // Check Inventory (DLC Items / Consumables)
+    if (profile.inventory[itemId] > 0) {
+      return { success: false, error: 'already_owned' };
+    }
+
+    // 3. Grant the Item
+    // Find item definition to know type
+    const itemDef = SHOP_ITEMS.find(i => i.id === itemId);
+    if (!itemDef) return { success: false, error: 'item_def_missing' };
+
+    if (itemDef.type === 'consumable' || itemDef.type === 'dlc_item') {
+      // Add to inventory
+      const currentQty = profile.inventory[itemId] || 0;
+      updateProfile({
+        inventory: { ...profile.inventory, [itemId]: currentQty + 1 }
+      });
+    } else {
+      // Add to unlocked rewards
+      updateProfile({
+        unlockedRewards: [...profile.unlockedRewards, itemId]
+      });
+    }
+
+    return { success: true };
   };
 
   return (
@@ -139,7 +185,8 @@ export const GuildProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           return updated;
         });
       },
-      importGuildData
+      importGuildData,
+      redeemLicense
     }}>
       {children}
     </GuildContext.Provider>

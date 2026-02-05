@@ -32,6 +32,7 @@ import { RecordChronicleModal } from './components/game/RecordChronicleModal';
 import { BlackBookModal } from './components/game/BlackBookModal';
 import { ShopModal } from './components/game/ShopModal';
 import { InventoryModal } from './components/game/InventoryModal';
+import { RedemptionModal } from './components/game/RedemptionModal';
 import { SelectionMenu } from './components/ui/SelectionMenu';
 import { Icons } from './components/ui/Icons';
 import { CustomSelect } from './components/ui/CustomSelect';
@@ -49,6 +50,7 @@ const GameContent: React.FC = () => {
   const [showLibrary, setShowLibrary] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
+  const [showRedemption, setShowRedemption] = useState(false);
   const [showTrainingMenu, setShowTrainingMenu] = useState(false);
 
   const [errorState, setErrorState] = useState<{ message: string, retryAction: () => void } | null>(null);
@@ -339,7 +341,7 @@ const GameContent: React.FC = () => {
                       variant="secondary"
                       onClick={() => setShowHistory(true)}
                     >
-                      {t.missionHistory}
+                      {t.messengerInfo}
                     </FantasyButton>
                     <FantasyButton
                       className="w-full text-xs uppercase tracking-tighter py-3"
@@ -395,6 +397,15 @@ const GameContent: React.FC = () => {
             </button>
           </>
         )}
+        {gameState.currentPhase === GamePhase.MENU && (
+          <button
+            onClick={() => setShowRedemption(true)}
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#f3e5ab] hover:text-white transition drop-shadow-md bg-black/30 rounded-full hover:bg-black/50 pointer-events-auto"
+            title={t.redeemCode || "Redeem Code"}
+          >
+            <Icons.Gift className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
+        )}
         <button
           onClick={() => setShowSettings(true)}
           className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#f3e5ab] hover:text-white transition drop-shadow-md bg-black/30 rounded-full hover:bg-black/50 pointer-events-auto"
@@ -408,7 +419,9 @@ const GameContent: React.FC = () => {
       {showHistory && <RecordChronicleModal onClose={() => setShowHistory(false)} />}
       {showLibrary && <BlackBookModal onClose={() => setShowLibrary(false)} />}
       {showShop && <ShopModal onClose={() => setShowShop(false)} />}
+      {showShop && <ShopModal onClose={() => setShowShop(false)} />}
       {showInventory && <InventoryModal onClose={() => setShowInventory(false)} currentPhase={gameState.currentPhase} onUseItem={handleItemUse} />}
+      {showRedemption && <RedemptionModal onClose={() => setShowRedemption(false)} />}
       {errorState && <ErrorModal error={errorState} onClose={() => setErrorState(null)} />}
 
       <main className="p-2 md:p-4 pt-12 md:pt-16 min-h-screen relative overflow-auto scrollbar-hide pb-20 md:pb-4">

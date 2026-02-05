@@ -49,3 +49,64 @@ Dies lehrte uns: Information ist die ultimative Waffe.`,
 這教會了我們：情報即是終極武器。`
   }
 };
+
+// Main Story Chronicles - Unlocked by Messenger Level (XP)
+export const MAIN_STORY_CHRONICLES: Array<{
+  id: string;
+  levelRequired: number;
+  title: { de: string; zh: string };
+  content: { de: string; zh: string };
+}> = [
+    {
+      id: 'main_story_01',
+      levelRequired: 1,
+      title: {
+        de: "Der Eid in der Dunkelheit",
+        zh: "黑暗中的誓言"
+      },
+      content: {
+        de: `**Prolog: Der Eid**
+
+In den Schatten der Geschichte, wo Könige und Kaiser vergessen werden, bleiben nur wir. Wir tragen keine Kronen, sondern Taschen. Wir führen keine Kriege, wir beenden sie – oder starten sie – mit einem einzigen Stück Papier.
+
+Du fragst dich, warum du hier bist? Warum du das Siegel trägst?
+
+Weil du verstehst, dass Wahheit ein Schwert ist. Und wir sind die einzigen, die wissen, wie man es führt, ohne sich selbst zu schneiden.
+
+Willkommen in der Gilde. Dein Weg beginnt hier, auf Level 1. Aber der Pfad reicht tiefer, als du ahnst.`,
+        zh: `**序章：誓言**
+
+在歷史的陰影中，當國王與皇帝都被遺忘之時，唯有我們長存。我們不戴皇冠，只揹行囊。我們不發動戰爭，我們只用一張紙結束——或開始——戰爭。
+
+你問為什麼你會在這裡？為什麼你佩戴著這枚印璽？
+
+因為你明白，真相是一把雙面刃。而我們是唯一知道如何揮舞它而不傷及自身的人。
+
+歡迎來到公會。你的旅程始於等級 1。但這條路，比你想像的還要深邃。`
+      }
+    },
+    {
+      id: 'main_story_02',
+      levelRequired: 5,
+      title: {
+        de: "Die erste Regel",
+        zh: "第一條規則"
+      },
+      content: {
+        de: `**Level 5: Verschwiegenheit**
+
+Du hast nun einige Reisen hinter dir. Du hast gesehen, wie Lügen zu Währungen werden.
+
+Die erste Regel der Gilde lautet nicht "Sei schnell". Sie lautet "Sei unsichtbar". Ein Bote, an den man sich erinnert, hat versagt. Wir sind der Wind, der das Feuer entfacht, nicht das Streichholz.
+
+Erinnere dich daran, wenn du das nächste Mal dem Feind in die Augen blickst.`,
+        zh: `**等級 5：守密**
+
+你已經經歷了幾次旅程。你見識到了謊言如何成為貨幣。
+
+公會的第一條規則不是「要快」。而是「要隱形」。一個被人記住的信使是失敗的。我們是搧風點火的風，而不是那一根火柴。
+
+當你下次直視敵人雙眼時，請記住這一點。`
+      }
+    }
+  ];

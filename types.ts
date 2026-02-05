@@ -140,6 +140,27 @@ export interface MissionData {
     outcome: string;
   };
   illustrationUrl?: string;
+  // DLC Support
+  dlcManifest?: DLCManifest;
+}
+
+export interface DLCManifest {
+  id: string;
+  name: string; // Internal name or ID
+  displayTitle: { de: string; zh: string };
+  summary: { de: string; zh: string };
+  tags: string[];
+  estimatedPlaytime: string;
+}
+
+export interface DLCData {
+  id: string;
+  inventoryItem: {
+    id: string;
+    containerId?: string; // If this item belongs inside a container
+  };
+  manifest: DLCManifest;
+  // ... other DLC fields (context, stages) omitted for now as they are handled by logic
 }
 
 export interface MissionRecord {

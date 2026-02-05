@@ -10,7 +10,8 @@ export const zh = {
     guildRegistration: "公會註冊",
     apiKeyLabel: "Gemini API 金鑰",
     interfaceLanguage: "介面語言",
-    targetProficiency: "目標德語程度",
+    targetProficiency: "目標等級",
+    lockedDuringMission: "(任務進行中鎖定)",
     missionStatus: "任務狀態", // Added key
     abandonWarning: "確定要放棄當前任務並返回大廳嗎？所有進度將會遺失。", // Ensure consistent usage
     signAndSeal: "簽署並蓋章",
@@ -33,12 +34,34 @@ export const zh = {
     inventory: "信使行囊",
     collection: "收藏品",
     emptyInventory: "你的背包裡空無一物。",
-    guildChronicles: "公會秘史",
-    chronicleBookTitle: "公會秘史",
+    guildChronicles: "追憶片段",
+    chronicleBookTitle: "追憶片段",
+    tabMainStory: "信使之路 (主線)",
+    tabSideStory: "街談巷議 (支線)",
     tableOfContents: "目錄",
     chapterLocked: "未解鎖",
     visitShop: "請至商店購買",
     read: "閱讀",
+    dlcBoxTitle: "百寶匣",
+    openDlcBox: "開啟",
+
+    // Collection & Status
+    defaultTheme: "預設羊皮紙",
+    active: "使用中",
+    equip: "裝備",
+    equipped: "已裝備",
+    unlocked: "已解鎖",
+
+    // Shop Categories
+    shopCategory: {
+        consumable: "消耗品",
+        origin: "身世",
+        theme: "主題",
+        badge: "徽章",
+        chronicle: "追憶片段"
+    },
+
+    requiresLevel: "需要等級 {level}",
 
     // Inventory Action
     useItem: "使用道具",
@@ -131,8 +154,10 @@ export const zh = {
     // Epilogue
     missionComplete: "勤務結束",
     trainingComplete: "日常勤務完成",
+    trainingNoScore: "熟能生巧。本次不計分。",
     finalGrade: "評級",
     finalTrustScore: "最終信任度",
+    finalTrust: "信任度",
     reportScore: "報告評分",
     trainingScore: "訓練評分",
     outcome: "結果",
@@ -179,6 +204,7 @@ export const zh = {
     hideInfo: "隱藏資訊",
     role: "角色",
     loadingAudio: "讀取語音...",
+    replay: "重播",
     retry: "重試",
     ready: "就緒",
     translate: "翻譯",

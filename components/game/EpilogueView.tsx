@@ -5,6 +5,7 @@ import { useSettings } from '../../contexts/SettingsContext';
 import { useGuild } from '../../contexts/GuildContext';
 import { FantasyButton } from '../ui/FantasyButton';
 import { ParchmentContainer } from '../ui/ParchmentContainer';
+import { Icons } from '../ui/Icons';
 import { GamePhase, MissionRecord, CEFRLevel } from '../../types';
 import { translations } from '../../utils/translations';
 import { generateEndingIllustration } from '../../services/geminiService';
@@ -148,28 +149,52 @@ export const EpilogueView: React.FC = () => {
                         )}
                     </div>
 
-                    <div className="flex flex-col items-center">
-                        <div className="w-16 h-16 rounded-full border-4 border-dashed border-[#8a1c1c] bg-[#2c1810] flex items-center justify-center rotate-12 mb-2 relative">
-                            <span className="text-3xl font-fantasy font-bold text-[#f3e5ab]">{grade}</span>
-                        </div>
-                        {!isDemo && rewardPoints > 0 && (
-                            <div className="animate-bounce bg-yellow-100 px-2 py-1 rounded border border-yellow-400 text-yellow-800 text-xs font-bold flex items-center gap-1">
-                                🪙 +{rewardPoints} {t.guildMarks}
+                    {gameMode !== 'TRAINING' && (
+                        <div className="flex flex-col items-center">
+                            <div className="w-16 h-16 rounded-full border-4 border-dashed border-[#8a1c1c] bg-[#2c1810] flex items-center justify-center rotate-12 mb-2 relative">
+                                <span className="text-3xl font-fantasy font-bold text-[#f3e5ab]">{grade}</span>
                             </div>
-                        )}
-                    </div>
+                            {!isDemo && rewardPoints > 0 && (
+                                <div className="animate-bounce bg-yellow-100 px-2 py-1 rounded border border-yellow-400 text-yellow-800 text-xs font-bold flex items-center gap-1">
+                                    🪙 +{rewardPoints} {t.guildMarks}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
+                {/* 3. Stats / Grade (Hide for Training Mode) */}
+                {gameMode === 'TRAINING' ? (
+                    <div className="flex flex-col items-center justify-center p-8 bg-black/5 rounded-lg border-2 border-dashed border-[#2c1810]/20 mb-8">
+                        <div className="border-b-4 double border-[#2c1810] pb-6 mb-8 relative text-center w-full">
+                            <h1 className="text-5xl font-fantasy font-bold text-[#8a1c1c] mb-2">{t.missionComplete}</h1>
+                            <div className="text-lg italic opacity-80 font-serif">{mission?.title}</div>
 
-                <div className="grid grid-cols-2 gap-4 mb-8 text-center bg-black/5 p-4 rounded border border-black/10">
-                    <div>
-                        <div className="text-[10px] uppercase font-bold opacity-50">{t.finalTrustScore}</div>
-                        <div className="text-2xl font-fantasy transition-all duration-500">{trustScore}</div>
+                            {/* Seal / Grade (Only for Campaign) */}
+                            {gameMode !== 'TRAINING' && (
+                                <div className="absolute right-0 top-0 rotate-12 bg-[#8a1c1c] text-[#f3e5ab] w-20 h-20 rounded-full flex items-center justify-center font-fantasy font-bold text-5xl shadow-lg border-4 border-double border-[#f3e5ab] animate-in zoom-in spin-in-12 duration-1000">
+                                    {grade}
+                                </div>
+                            )}
+                        </div>
+                        <h2 className="text-2xl font-fantasy font-bold text-[#2c1810] tracking-widest uppercase">
+                            {t.trainingComplete || "Training Complete"}
+                        </h2>
+                        <p className="text-sm opacity-60 mt-2 italic">
+                            {t.trainingNoScore || "Practice makes perfect. No score recorded."}
+                        </p>
                     </div>
-                    <div>
-                        <div className="text-[10px] uppercase font-bold opacity-50">{isCampaign ? t.reportScore : t.trainingScore}</div>
-                        <div className="text-2xl font-fantasy transition-all duration-500">{currentReportScore}</div>
+                ) : (
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="bg-black/5 p-4 rounded text-center border border-black/10">
+                            <div className="text-xs uppercase tracking-widest opacity-60 mb-1">{t.finalTrust}</div>
+                            <div className="text-4xl font-fantasy font-bold text-[#2c1810]">{trustScore}</div>
+                        </div>
+                        <div className="bg-black/5 p-4 rounded text-center border border-black/10">
+                            <div className="text-xs uppercase tracking-widest opacity-60 mb-1">{t.reportScore}</div>
+                            <div className="text-4xl font-fantasy font-bold text-[#2c1810]">{currentReportScore}</div>
+                        </div>
                     </div>
-                </div>
+                )}
 
                 <div className="space-y-8">
                     {isCampaign && (
