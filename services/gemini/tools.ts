@@ -69,11 +69,30 @@ export const generateTTS = async (apiKey: string, text: string, voiceName: strin
 export const generateEndingIllustration = async (apiKey: string, outcome: string): Promise<string> => {
   if (!apiKey) throw new Error("API Key is missing");
   const client = new GoogleGenAI({ apiKey });
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash-image',
-    contents: { parts: [{ text: `A cinematic fantasy oil painting depicting: ${outcome}. Parchment texture, dramatic lighting, epic tabletop RPG style, Old Master style. IMPORTANT: NO TEXT, NO LABELS, NO LETTERS, NO UI ELEMENTS. PURE IMAGE ONLY.` }] },
-    config: { imageConfig: { aspectRatio: "16:9" } },
-  });
-  const part = response.candidates[0].content.parts.find(p => p.inlineData);
-  return part ? `data:image/png;base64,${part.inlineData.data}` : "";
+
+  try {
+    const response = await client.models.generateImages({
+      model: 'imagen-3.0-generate-001',
+      prompt: `A cinematic fantasy oil painting depicting: ${outcome}. Parchment texture, dramatic lighting, epic tabletop RPG style, Old Master style. IMPORTANT: NO TEXT, NO LABELS, NO LETTERS, NO UI ELEMENTS. PURE IMAGE ONLY.`,
+      config: { aspectRatio: "16:9" },
+    });
+
+    // Check for generated images in the response
+    const image = response.generatedImages?.[0]?.image as any;
+
+    if (image) {
+      if (image.base64) return `data:image/png;base64,${image.base64}`;
+      if (image.b64Json) return `data:image/png;base64,${image.b64Json}`;
+      // Fallback for potentially binary format
+      // Note: If imageBytes is Uint8Array/Buffer
+      if (image.imageBytes) {
+        return `data:image/png;base64,${Buffer.from(image.imageBytes).toString('base64')}`;
+      }
+    }
+
+    throw new Error("No image data received from Imagen");
+  } catch (error) {
+    console.error("Image Generation Error:", error);
+    throw error;
+  }
 };
