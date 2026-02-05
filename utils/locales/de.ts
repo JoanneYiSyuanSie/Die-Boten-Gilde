@@ -44,6 +44,7 @@ export const de = {
     read: "Lesen",
     dlcBoxTitle: "Schatztruhe",
     openDlcBox: "Öffnen",
+    redeemCode: "Code einlösen",
 
     // Collection & Status
     defaultTheme: "Standard",

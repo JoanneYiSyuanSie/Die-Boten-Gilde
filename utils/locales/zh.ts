@@ -44,6 +44,7 @@ export const zh = {
     read: "閱讀",
     dlcBoxTitle: "百寶匣",
     openDlcBox: "開啟",
+    redeemCode: "兌換代碼",
 
     // Collection & Status
     defaultTheme: "預設羊皮紙",
