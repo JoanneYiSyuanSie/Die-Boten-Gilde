@@ -70,6 +70,30 @@ export const generateEndingIllustration = async (apiKey: string, outcome: string
   if (!apiKey) throw new Error("API Key is missing");
   const client = new GoogleGenAI({ apiKey });
 
+  // Strategy: Try Fast Flash Model first -> Fallback to High-Quality Imagen 3
+
+  // 1. Attempt Gemini 2.5 Flash Image (Fast & High Quota)
+  try {
+    const response = await client.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: { parts: [{ text: `Generate a cinematic fantasy oil painting depicting: ${outcome}. Parchment texture, dramatic lighting, epic tabletop RPG style, Old Master style. IMPORTANT: NO TEXT, NO LABELS, NO LETTERS, NO UI ELEMENTS. PURE IMAGE ONLY.` }] },
+      config: { imageConfig: { aspectRatio: "16:9" } },
+    });
+
+    // Check for inline data in candidates (Flash Image output format)
+    const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    if (part?.inlineData?.data) {
+      return `data:image/png;base64,${part.inlineData.data}`;
+    }
+
+    // If no inline data, it might have failed tacitly or safety blocked
+    console.warn("Gemini Flash Image returned no inline data. Falling back...");
+  } catch (flashError) {
+    console.warn("Gemini Flash Image failed:", flashError);
+    // Fallthrough to Imagen 3
+  }
+
+  // 2. Fallback to Imagen 3 (Reliable but lower quota?)
   try {
     const response = await client.models.generateImages({
       model: 'imagen-3.0-generate-001',
@@ -84,7 +108,6 @@ export const generateEndingIllustration = async (apiKey: string, outcome: string
       if (image.base64) return `data:image/png;base64,${image.base64}`;
       if (image.b64Json) return `data:image/png;base64,${image.b64Json}`;
       // Fallback for potentially binary format
-      // Note: If imageBytes is Uint8Array/Buffer
       if (image.imageBytes) {
         return `data:image/png;base64,${Buffer.from(image.imageBytes).toString('base64')}`;
       }
@@ -92,7 +115,7 @@ export const generateEndingIllustration = async (apiKey: string, outcome: string
 
     throw new Error("No image data received from Imagen");
   } catch (error) {
-    console.error("Image Generation Error:", error);
+    console.error("Image Generation Error (All Models Failed):", error);
     throw error;
   }
 };
