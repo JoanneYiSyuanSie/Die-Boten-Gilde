@@ -36,8 +36,14 @@ export const generateMission = async (apiKey: string, level: CEFRLevel, topic: s
      - ROLES: [${roles}]
      - BACKGROUNDS: [${backgrounds}]
      - PERSONALITIES: [${personalities}]
-  3. 'npcVoice': Must be exactly one of: 'Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr'.
+  3. 'npcVoice': Must be exactly one of: 
+     - 'Puck' (Female, Playful)
+     - 'Kore' (Female, Mystical)
+     - 'Zephyr' (Female, Soft)
+     - 'Charon' (Male, Deep)
+     - 'Fenrir' (Male, Aggressive)
   4. 'npcName' MUST match the name used in 'initialStatement'. If the NPC introduces themselves, use the same name.
+  5. **CONSISTENCY CHECK**: If you choose a Male voice, the NPC description/title MUST be Male (e.g. "Herr", "Mönch"). If Female voice, MUST be Female (e.g. "Frau", "Nonne").
   
   Stage 3: A written report to the Guild Master.
   

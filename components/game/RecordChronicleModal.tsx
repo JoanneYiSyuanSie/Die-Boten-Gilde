@@ -5,7 +5,7 @@ import { translations } from '../../utils/translations';
 import { useSettings } from '../../contexts/SettingsContext';
 import { useGuild } from '../../contexts/GuildContext';
 import { loadMissionRecords } from '../../utils/storageUtils';
-import { MissionRecord } from '../../types';
+import { MissionRecord, GamePhase } from '../../types';
 import { Icons } from '../ui/Icons';
 import { SHOP_ITEMS, ShopItem } from '../../constants/shopItems';
 import { CHRONICLES, MAIN_STORY_CHRONICLES } from '../../content/chronicles';
@@ -38,7 +38,31 @@ export const RecordChronicleModal: React.FC<{ onClose: () => void }> = ({ onClos
         setShowChronicleIndex(prev => !prev);
     };
 
-    // ... handleLaunchDLC ...
+    const handleLaunchDLC = async (item: ShopItem) => {
+        const dlcId = item.id;
+        if (isDLCAvailable(dlcId)) {
+            const pkg = getDLCPackage(dlcId);
+            if (pkg) {
+                const missionData = adaptDLCToMissionData(pkg, settings.language);
+                onClose();
+
+                // Construct Audio URL if present
+                // Assuming audio files are in public/dlc-audio/ or similar.
+                // For now, let's assume root /dlc-audio/ based on standard practice or just /audio/
+                // Checking previous code, demo used "demo-audio/". Let's try "dlc-audio/"
+                const audioUrl = pkg.audioFileName
+                    ? `${import.meta.env.BASE_URL}dlc-audio/${pkg.audioFileName}`
+                    : '';
+
+                // Small delay to allow modal close animation
+                setTimeout(() => {
+                    startGame(missionData, audioUrl, pkg.mode, GamePhase.LEVEL_1, undefined);
+                }, 300);
+            }
+        } else {
+            alert(t.contentNotLoaded || "Content not loaded.");
+        }
+    };
 
     // Helper to get chronicle content (Modified to handle both types)
     const getChronicleContent = (id: string, isMainStory: boolean) => {
@@ -231,7 +255,51 @@ export const RecordChronicleModal: React.FC<{ onClose: () => void }> = ({ onClos
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <ParchmentContainer className="max-w-5xl w-full h-[85vh] flex flex-col overflow-hidden relative">
-                {/* ... DLC Index Overlay ... */}
+                {/* DLC Index Overlay */}
+                {showDLCIndex && (
+                    <div className="absolute inset-0 z-[55] p-8 bg-[#f3e5ab] animate-in slide-in-from-right duration-300 overflow-y-auto">
+                        <div className="max-w-3xl mx-auto flex flex-col h-full">
+                            <div className="flex justify-between items-center border-b-2 border-[#2c1810] pb-4 mb-6">
+                                <h2 className="text-3xl font-fantasy font-bold text-[#2c1810]">{t.dlcBoxTitle || "DLC Box"}</h2>
+                                <button onClick={() => setShowDLCIndex(false)} className="text-[#2c1810] hover:scale-110 transition-transform text-button">
+                                    <Icons.Cross className="w-8 h-8" />
+                                </button>
+                            </div>
+
+                            <div className="grid gap-4">
+                                {SHOP_ITEMS.filter(item => item.type === 'dlc_item' && profile.inventory[item.id] > 0).map(item => {
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => handleLaunchDLC(item)}
+                                            className="w-full text-left p-6 border-b border-[#2c1810]/20 flex justify-between items-center group hover:bg-[#2c1810]/5 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 bg-[#2c1810] rounded-lg flex items-center justify-center border-2 border-[#f3e5ab] shadow-sm">
+                                                    <Icons.Scroll className="w-6 h-6 text-[#f3e5ab]" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-fantasy font-bold text-xl mb-1">{item.name[settings.language]}</div>
+                                                    <div className="text-xs opacity-70 italic">{item.description[settings.language]}</div>
+                                                </div>
+                                            </div>
+                                            <span className="bg-[#8a1c1c] text-[#f3e5ab] px-4 py-2 rounded font-fantasy font-bold uppercase text-sm group-hover:bg-[#a32222] transition-colors shadow-md">
+                                                {t.play || "Play"}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+
+                                {SHOP_ITEMS.filter(item => item.type === 'dlc_item' && profile.inventory[item.id] > 0).length === 0 && (
+                                    <div className="flex flex-col items-center justify-center opacity-40 italic mt-10 gap-4">
+                                        <Icons.Satchel className="w-16 h-16" />
+                                        <p>{t.emptyInventory || "No DLCs found."}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Chronicle Index Overlay (Tabbed) */}
                 {showChronicleIndex && (

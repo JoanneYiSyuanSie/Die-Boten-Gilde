@@ -45,6 +45,8 @@ export const de = {
     dlcBoxTitle: "Schatztruhe",
     openDlcBox: "Öffnen",
     redeemCode: "Code einlösen",
+    play: "Spielen",
+    contentNotLoaded: "Inhalt nicht geladen.",
 
     // Collection & Status
     defaultTheme: "Standard",

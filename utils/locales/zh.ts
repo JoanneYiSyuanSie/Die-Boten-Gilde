@@ -45,6 +45,8 @@ export const zh = {
     dlcBoxTitle: "百寶匣",
     openDlcBox: "開啟",
     redeemCode: "兌換代碼",
+    play: "遊玩",
+    contentNotLoaded: "內容尚未載入。",
 
     // Collection & Status
     defaultTheme: "預設羊皮紙",

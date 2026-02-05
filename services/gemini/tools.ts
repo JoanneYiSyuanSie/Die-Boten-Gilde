@@ -69,8 +69,7 @@ export const generateTTS = async (apiKey: string, text: string, voiceName: strin
 export const generateEndingIllustration = async (apiKey: string, outcome: string): Promise<string> => {
   if (!apiKey) throw new Error("API Key is missing");
   const client = new GoogleGenAI({ apiKey });
-
-  // Strategy: Try Fast Flash Model first -> Fallback to High-Quality Imagen 3
+  // Strategy: Try Fast Flash Model first -> Fallback to Experimental Flash (Reliable)
 
   // 1. Attempt Gemini 2.5 Flash Image (Fast & High Quota)
   try {
@@ -80,42 +79,35 @@ export const generateEndingIllustration = async (apiKey: string, outcome: string
       config: { imageConfig: { aspectRatio: "16:9" } },
     });
 
-    // Check for inline data in candidates (Flash Image output format)
+    // Check for inline data in candidates
     const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
     if (part?.inlineData?.data) {
       return `data:image/png;base64,${part.inlineData.data}`;
     }
 
-    // If no inline data, it might have failed tacitly or safety blocked
-    console.warn("Gemini Flash Image returned no inline data. Falling back...");
-  } catch (flashError) {
-    console.warn("Gemini Flash Image failed:", flashError);
-    // Fallthrough to Imagen 3
+    console.warn("Gemini 2.5 Flash Image returned no image data.");
+  } catch (flashError: any) {
+    console.error("Gemini 2.5 Flash Image failed:", flashError.message || flashError);
+    // Fallthrough
   }
 
-  // 2. Fallback to Imagen 3 (Reliable but lower quota?)
+  // 2. Fallback to Gemini 2.0 Flash Exp (Known to support image generation well)
   try {
-    const response = await client.models.generateImages({
-      model: 'imagen-3.0-generate-001',
-      prompt: `A cinematic fantasy oil painting depicting: ${outcome}. Parchment texture, dramatic lighting, epic tabletop RPG style, Old Master style. IMPORTANT: NO TEXT, NO LABELS, NO LETTERS, NO UI ELEMENTS. PURE IMAGE ONLY.`,
-      config: { aspectRatio: "16:9" },
+    console.log("Attempting fallback to gemini-2.0-flash-exp...");
+    const response = await client.models.generateContent({
+      model: 'gemini-2.0-flash-exp',
+      contents: { parts: [{ text: `Generate a cinematic fantasy oil painting depicting: ${outcome}. Parchment texture, dramatic lighting, epic tabletop RPG style, Old Master style. IMPORTANT: NO TEXT, NO LABELS, NO LETTERS, NO UI ELEMENTS. PURE IMAGE ONLY.` }] },
+      config: { responseMimeType: "image/png" }, // Try hinting mime type
     });
 
-    // Check for generated images in the response
-    const image = response.generatedImages?.[0]?.image as any;
-
-    if (image) {
-      if (image.base64) return `data:image/png;base64,${image.base64}`;
-      if (image.b64Json) return `data:image/png;base64,${image.b64Json}`;
-      // Fallback for potentially binary format
-      if (image.imageBytes) {
-        return `data:image/png;base64,${Buffer.from(image.imageBytes).toString('base64')}`;
-      }
+    const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    if (part?.inlineData?.data) {
+      return `data:image/png;base64,${part.inlineData.data}`;
     }
 
-    throw new Error("No image data received from Imagen");
+    throw new Error("No inline data received from fallback model");
   } catch (error) {
-    console.error("Image Generation Error (All Models Failed):", error);
+    console.error("All Image Generation Models Failed:", error);
     throw error;
   }
 };

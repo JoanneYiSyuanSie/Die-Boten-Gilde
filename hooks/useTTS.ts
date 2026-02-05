@@ -41,7 +41,7 @@ export const useTTS = () => {
         // 2. Browser Fallback
         return new Promise((resolve) => {
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = settings.language === 'de' ? 'de-DE' : 'zh-TW'; // Target language (German usually)
+            utterance.lang = 'de-DE'; // NPC Dialogue is always German
 
             // Attempt to find a matching voice
             const voices = window.speechSynthesis.getVoices();
@@ -49,7 +49,7 @@ export const useTTS = () => {
 
             // Simple matching logic
             const targetVoice = voices.find(v =>
-                v.lang.startsWith(settings.language === 'de' ? 'de' : 'zh') &&
+                v.lang.startsWith('de') && // Must be German voice
                 (v.name.toLowerCase().includes(pref.gender === 'female' ? 'female' : 'male') ||
                     v.name.toLowerCase().includes('google')) // "Google Deutsch" is usually female/neutral good quality
             );
