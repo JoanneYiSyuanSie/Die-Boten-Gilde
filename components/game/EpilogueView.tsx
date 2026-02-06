@@ -225,7 +225,7 @@ export const EpilogueView: React.FC = () => {
                                         <img src={illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
                                     ) : isDemo ? (
                                         <img
-                                            src="/assets/demo_ending.png"
+                                            src={`${import.meta.env.BASE_URL}assets/demo_ending.png`}
                                             alt="Demo Ending"
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
