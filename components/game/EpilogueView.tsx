@@ -46,6 +46,7 @@ export const EpilogueView: React.FC = () => {
     const { addGuildMarks, addToBlackBook } = useGuild();
     const { feedback, trustScore, illustrationUrl, playerReport, gameMode, mission } = gameState;
     const [isGeneratingImg, setIsGeneratingImg] = useState(!illustrationUrl);
+    const [generationError, setGenerationError] = useState<string | null>(null);
     const [rewardPoints, setRewardPoints] = useState(0);
     const [isSaved, setIsSaved] = useState(false);
     const hasSaved = useRef(false);
@@ -75,10 +76,14 @@ export const EpilogueView: React.FC = () => {
             // Generate Illustration
             if (isCampaign && !illustrationUrl && !isDemo && settings.apiKey) {
                 setIsGeneratingImg(true);
+                setGenerationError(null);
                 try {
                     imgUrl = await generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished");
                     setGameState(prev => ({ ...prev, illustrationUrl: imgUrl }));
-                } catch (err) { console.error(err); }
+                } catch (err: any) {
+                    console.error(err);
+                    setGenerationError(err.message || "Unknown generation error");
+                }
                 setIsGeneratingImg(false);
             } else if (isDemo) {
                 setIsGeneratingImg(false);
@@ -198,45 +203,74 @@ export const EpilogueView: React.FC = () => {
 
                 <div className="space-y-8">
                     {isCampaign && (
-                        <div className="relative aspect-video w-full rounded border-4 border-[#2c1810] shadow-xl bg-black/10 flex items-center justify-center overflow-hidden group">
-                            {isGeneratingImg ? (
-                                <div className="flex flex-col items-center animate-pulse">
-                                    <div className="text-4xl mb-2">🎨</div>
-                                    <div className="font-fantasy text-sm">{t.paintingIllustration}...</div>
-                                </div>
-                            ) : illustrationUrl ? (
-                                <img src={illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
-                            ) : isDemo ? (
-                                <div className="text-center opacity-50 p-4">
-                                    <div className="text-4xl mb-2">🖼️</div>
-                                    <div className="text-sm font-fantasy">Illustrations are disabled in Demo Mode</div>
-                                </div>
-                            ) : (
-                                <div className="text-center opacity-50 p-4 flex flex-col items-center gap-2">
-                                    <div className="text-4xl mb-2">🎨</div>
-                                    <div className="text-sm font-fantasy">{t.paintingIllustration}</div>
-                                    {isCampaign && settings.apiKey && (
-                                        <FantasyButton
-                                            onClick={() => {
-                                                setIsGeneratingImg(true);
-                                                generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished")
-                                                    .then(url => {
-                                                        setGameState(prev => ({ ...prev, illustrationUrl: url }));
-                                                        setIsGeneratingImg(false);
-                                                    })
-                                                    .catch(e => {
-                                                        console.error(e);
-                                                        setIsGeneratingImg(false);
-                                                    });
+                        (() => {
+                            // Helper to determine if we should hide the container completely (Hard Error)
+                            const isHardError = generationError && (
+                                generationError.includes("404") ||
+                                generationError.toLowerCase().includes("not found") ||
+                                generationError.toLowerCase().includes("not supported") ||
+                                generationError.toLowerCase().includes("permission")
+                            );
+
+                            if (isHardError) return null;
+
+                            return (
+                                <div className="relative aspect-video w-full rounded border-4 border-[#2c1810] shadow-xl bg-black/10 flex items-center justify-center overflow-hidden group">
+                                    {isGeneratingImg ? (
+                                        <div className="flex flex-col items-center animate-pulse">
+                                            <div className="text-4xl mb-2">🎨</div>
+                                            <div className="font-fantasy text-sm">{t.paintingIllustration}...</div>
+                                        </div>
+                                    ) : illustrationUrl ? (
+                                        <img src={illustrationUrl} alt="Ending" className="w-full h-full object-cover" />
+                                    ) : isDemo ? (
+                                        <img
+                                            src="/assets/demo_ending.png"
+                                            alt="Demo Ending"
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = 'none';
+                                                const parent = e.currentTarget.parentElement;
+                                                if (parent) {
+                                                    parent.innerHTML = `
+                                                        <div class="text-center opacity-50 p-4 flex flex-col items-center">
+                                                            <div class="text-4xl mb-2">🖼️</div>
+                                                            <div class="text-sm font-fantasy">Illustrations are disabled in Demo Mode</div>
+                                                        </div>
+                                                    `;
+                                                }
                                             }}
-                                            className="text-xs"
-                                        >
-                                            Paint Scene
-                                        </FantasyButton>
+                                        />
+                                    ) : (
+                                        <div className="text-center opacity-50 p-4 flex flex-col items-center gap-2">
+                                            <div className="text-4xl mb-2">🎨</div>
+                                            <div className="text-sm font-fantasy text-red-800">{generationError ? "Connection Unstable" : t.paintingIllustration}</div>
+                                            {isCampaign && settings.apiKey && (
+                                                <FantasyButton
+                                                    onClick={() => {
+                                                        setIsGeneratingImg(true);
+                                                        setGenerationError(null);
+                                                        generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished")
+                                                            .then(url => {
+                                                                setGameState(prev => ({ ...prev, illustrationUrl: url }));
+                                                                setIsGeneratingImg(false);
+                                                            })
+                                                            .catch(e => {
+                                                                console.error(e);
+                                                                setGenerationError(e.message || "Error");
+                                                                setIsGeneratingImg(false);
+                                                            });
+                                                    }}
+                                                    className="text-xs"
+                                                >
+                                                    {generationError ? "Retry Painting" : "Paint Scene"}
+                                                </FantasyButton>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
-                            )}
-                        </div>
+                            );
+                        })()
                     )}
 
                     <div className={`grid grid-cols-1 ${isCampaign ? 'md:grid-cols-2' : ''} gap-6`}>
