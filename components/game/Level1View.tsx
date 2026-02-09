@@ -39,7 +39,9 @@ export const Level1View: React.FC = () => {
             // Import dynamically or check imports. Level1View currently imports pcmToWav. 
             // I need to add generateTTS to imports.
             const { generateTTS } = await import('../../services/geminiService');
-            const url = await generateTTS(settings.apiKey, mission.decryptedMessage.fullText);
+            // Use same neutral narrator voice as in App.tsx for consistency
+            const narratorVoice = 'Kore';
+            const url = await generateTTS(settings.apiKey, mission.decryptedMessage.fullText, narratorVoice);
             setGameState(prev => ({ ...prev, audioUrl: url }));
         } catch (e) {
             console.error("Audio generation failed", e);

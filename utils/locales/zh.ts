@@ -45,6 +45,12 @@ export const zh = {
     dlcBoxTitle: "百寶匣",
     openDlcBox: "開啟",
     redeemCode: "兌換代碼",
+    redeemTitle: "兌換神秘代碼",
+    redeemDescription: "收到來自遠方的密函了嗎?輸入代碼以領取包裹。",
+    redeemButton: "兌換",
+    redeemSuccess: "序號驗證成功!物品已送達。",
+    redeemError: "無效的序號,請檢查輸入。",
+    redeemVerifying: "驗證中...",
     play: "遊玩",
     contentNotLoaded: "內容尚未載入。",
 
@@ -118,8 +124,12 @@ export const zh = {
 
     // Instructions (Titles only, content moved to content/lore.ts)
     gameInstructions: "信使指南",
-    instructionLoreTitle: "一、公會與世界觀",
-    instructionRuleTitle: "二、勤務條例",
+    instructionLoreTitle: "世界觀",
+    instructionRuleTitle: "勤務條例",
+    instructionCampaignTitle: "戰役",
+    instructionTrainingTitle: "訓練",
+    instructionFeaturesTitle: "功能",
+    instructionShopTitle: "商店",
     nextPage: "下一頁",
     prevPage: "上一頁",
 

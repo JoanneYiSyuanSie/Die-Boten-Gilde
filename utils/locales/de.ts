@@ -45,6 +45,12 @@ export const de = {
     dlcBoxTitle: "Schatztruhe",
     openDlcBox: "Öffnen",
     redeemCode: "Code einlösen",
+    redeemTitle: "Geheimcode einlösen",
+    redeemDescription: "Eine Nachricht aus der Ferne erhalten? Gib den Code ein, um dein Paket zu beanspruchen.",
+    redeemButton: "Einlösen",
+    redeemSuccess: "Code erfolgreich eingelöst! Gegenstände erhalten.",
+    redeemError: "Ungültiger Code. Bitte überprüfe deine Eingabe.",
+    redeemVerifying: "Überprüfen...",
     play: "Spielen",
     contentNotLoaded: "Inhalt nicht geladen.",
 
@@ -118,8 +124,12 @@ export const de = {
 
     // Instructions (Titles only, content moved to content/lore.ts)
     gameInstructions: "Gilden-Leitfaden",
-    instructionLoreTitle: "I. Die Gilde & Die Welt",
-    instructionRuleTitle: "II. Dienstvorschriften",
+    instructionLoreTitle: "Weltgeschichte",
+    instructionRuleTitle: "Dienstvorschriften",
+    instructionCampaignTitle: "Kampagne",
+    instructionTrainingTitle: "Training",
+    instructionFeaturesTitle: "Funktionen",
+    instructionShopTitle: "Shop",
     nextPage: "Nächste Seite",
     prevPage: "Zurück",
 

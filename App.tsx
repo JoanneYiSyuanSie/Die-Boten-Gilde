@@ -134,7 +134,14 @@ const GameContent: React.FC = () => {
       let audioUrl = "";
       if ((mode === 'CAMPAIGN' || startPhase === GamePhase.LEVEL_1) && missionData.decryptedMessage?.fullText) {
         try {
-          audioUrl = await generateTTS(settings.apiKey, missionData.decryptedMessage.fullText);
+          // Design Decision: Use fixed neutral narrator voice for Level 1 document reading
+          // Rationale:
+          // - The document author (e.g., king, bishop) is often NOT the same as the Level 2 NPC (e.g., guard, merchant)
+          // - Using the NPC's voice would create logical inconsistencies (e.g., a guard's voice reading a royal decree)
+          // - A neutral narrator clearly distinguishes "document narration" from "NPC dialogue"
+          // - 'Kore' (Female, Mystical) provides a neutral, story-telling atmosphere suitable for reading historical documents
+          const narratorVoice = 'Kore';
+          audioUrl = await generateTTS(settings.apiKey, missionData.decryptedMessage.fullText, narratorVoice);
         } catch (e) {
           console.warn("Intro TTS failed, continuing silent:", e);
         }

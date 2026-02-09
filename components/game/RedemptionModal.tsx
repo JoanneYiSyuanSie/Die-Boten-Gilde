@@ -30,11 +30,11 @@ export const RedemptionModal: React.FC<RedemptionModalProps> = ({ onClose }) => 
             const result = redeemLicense(keyInput.trim());
             if (result.success) {
                 setStatus('success');
-                setMessage(settings.language === 'zh' ? '序號驗證成功！物品已送達。' : 'Code redeemed successfully!');
+                setMessage(t.redeemSuccess);
                 setKeyInput('');
             } else {
                 setStatus('error');
-                setMessage(settings.language === 'zh' ? '無效的序號，請檢查輸入。' : 'Invalid code. Please check your input.');
+                setMessage(t.redeemError);
             }
         }, 1000);
     };
@@ -56,13 +56,11 @@ export const RedemptionModal: React.FC<RedemptionModalProps> = ({ onClose }) => 
                     </div>
 
                     <h3 className="text-2xl font-fantasy font-bold text-[#2c1810]">
-                        {settings.language === 'zh' ? '兌換神秘代碼' : 'Redeem Code'}
+                        {t.redeemTitle}
                     </h3>
 
                     <p className="text-sm italic opacity-70">
-                        {settings.language === 'zh'
-                            ? '收到來自遠方的密函了嗎？輸入代碼以領取包裹。'
-                            : 'Received a missive from afar? Enter the code to claim your package.'}
+                        {t.redeemDescription}
                     </p>
 
                     <div className="space-y-2">
@@ -80,7 +78,7 @@ export const RedemptionModal: React.FC<RedemptionModalProps> = ({ onClose }) => 
 
                         {status !== 'idle' && (
                             <div className={`text-sm font-bold flex items-center justify-center gap-2 ${status === 'success' ? 'text-green-700' :
-                                    status === 'error' ? 'text-red-700' : 'text-[#2c1810]'
+                                status === 'error' ? 'text-red-700' : 'text-[#2c1810]'
                                 }`}>
                                 {status === 'processing' && <Icons.Loader className="w-4 h-4 animate-spin" />}
                                 {status === 'success' && <Icons.Check className="w-4 h-4" />}
@@ -92,7 +90,7 @@ export const RedemptionModal: React.FC<RedemptionModalProps> = ({ onClose }) => 
                     <div className="pt-2">
                         {status === 'success' ? (
                             <FantasyButton onClick={onClose} className="w-full">
-                                {settings.language === 'zh' ? '確認' : 'Close'}
+                                {t.close}
                             </FantasyButton>
                         ) : (
                             <FantasyButton
@@ -100,7 +98,7 @@ export const RedemptionModal: React.FC<RedemptionModalProps> = ({ onClose }) => 
                                 disabled={!keyInput || status === 'processing'}
                                 className="w-full"
                             >
-                                {status === 'processing' ? 'Verifying...' : (settings.language === 'zh' ? '兌換' : 'Redeem')}
+                                {status === 'processing' ? t.redeemVerifying : t.redeemButton}
                             </FantasyButton>
                         )}
                     </div>

@@ -38,15 +38,18 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
     const pages = useMemo(() => {
         const sections = [
             { title: t.instructionLoreTitle, content: lore.world },
-            { title: t.instructionRuleTitle, content: lore.rules }
+            { title: t.instructionCampaignTitle, content: lore.campaignMode },
+            { title: t.instructionTrainingTitle, content: lore.trainingMode },
+            { title: t.instructionFeaturesTitle, content: lore.gameFeatures },
+            { title: t.instructionShopTitle, content: lore.itemsShop }
         ];
 
         const generatedPages: PageContent[] = [];
 
         // Configuration for "filling the page"
-        // A standard modal page roughly fits 800-1100 characters depending on language and breaks.
-        // We assign a "cost" to paragraphs to account for vertical whitespace.
-        const TARGET_PAGE_WEIGHT = 950;
+        // Reduced page weight to avoid content overflow without scrollbar
+        // Each page should comfortably fit within the modal height
+        const TARGET_PAGE_WEIGHT = 600;  // Further reduced to ensure no overflow
         const PARAGRAPH_BREAK_COST = 80; // Visual cost of a newline gap
 
         sections.forEach((section, sIndex) => {
@@ -91,6 +94,26 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
         return generatedPages;
     }, [t, lore]);
 
+    // Calculate section start pages for navigation
+    const sectionStartPages = useMemo(() => {
+        const starts: number[] = [];
+        pages.forEach((page, idx) => {
+            if (page.pageIndexInSection === 1) {
+                starts[page.sectionIndex] = idx;
+            }
+        });
+        return starts;
+    }, [pages]);
+
+    // Section names for navigation buttons
+    const sectionNames = useMemo(() => [
+        t.instructionLoreTitle,
+        t.instructionCampaignTitle,
+        t.instructionTrainingTitle,
+        t.instructionFeaturesTitle,
+        t.instructionShopTitle
+    ], [t]);
+
     const currentPageData = pages[currentGlobalPage];
     const isFirstPage = currentGlobalPage === 0;
     const isLastPage = currentGlobalPage === pages.length - 1;
@@ -102,6 +125,10 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
 
     const handlePrev = () => {
         if (!isFirstPage) setCurrentGlobalPage(prev => prev - 1);
+    };
+
+    const jumpToSection = (sectionIndex: number) => {
+        setCurrentGlobalPage(sectionStartPages[sectionIndex] || 0);
     };
 
     const renderText = (text: string) => {
@@ -124,7 +151,17 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
             <ParchmentContainer className="max-w-xl w-full h-[80vh] md:h-[600px] flex flex-col relative overflow-hidden transition-all duration-300">
 
                 {/* Header Section */}
-                <div className="flex-none text-center border-b-2 border-[#2c1810] pb-2 mb-4">
+                <div className="flex-none text-center border-b-2 border-[#2c1810] pb-2 mb-4 relative">
+                    {/* Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="absolute right-0 top-0 w-8 h-8 flex items-center justify-center text-[#2c1810] hover:text-[#8a1c1c] transition-colors rounded-full hover:bg-[#2c1810]/10"
+                        aria-label="關閉"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                     <h2 className="text-2xl md:text-3xl font-fantasy font-bold">{t.gameInstructions}</h2>
                     <div className="flex justify-center items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#8a1c1c] mt-1">
                         <span>{currentPageData.title}</span>
@@ -134,13 +171,33 @@ export const InstructionModal: React.FC<{ onClose: () => void }> = ({ onClose })
                             </span>
                         )}
                     </div>
+
+                    {/* Chapter Navigation Tabs */}
+                    <div className="flex gap-2 justify-center mt-3 flex-wrap px-2">
+                        {sectionNames.map((name, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => jumpToSection(idx)}
+                                className={`
+                                    px-2 md:px-3 py-1.5 text-xs md:text-sm font-bold uppercase tracking-wide
+                                    rounded transition-all
+                                    ${currentPageData.sectionIndex === idx
+                                        ? 'bg-[#8a1c1c] text-[#f3e5ab] shadow-md'
+                                        : 'bg-[#2c1810]/10 text-[#2c1810] hover:bg-[#2c1810]/20'
+                                    }
+                                `}
+                            >
+                                {name}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Content Section */}
-                <div className="flex-1 overflow-y-auto px-2 space-y-4 md:space-y-6">
-                    <div key={currentGlobalPage} className="animate-in fade-in slide-in-from-right-4 duration-300">
+                <div className="flex-1 px-2 min-h-0 flex flex-col justify-center">
+                    <div key={currentGlobalPage} className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-4 md:space-y-6">
                         {currentPageData.paragraphs.map((para, i) => (
-                            <p key={i} className="text-base md:text-lg leading-relaxed text-[#2c1810] font-body text-left mb-6 last:mb-0">
+                            <p key={i} className="text-base md:text-lg leading-relaxed text-[#2c1810] font-body text-left">
                                 {renderText(para)}
                             </p>
                         ))}

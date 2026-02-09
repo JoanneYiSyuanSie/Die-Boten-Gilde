@@ -204,15 +204,16 @@ export const EpilogueView: React.FC = () => {
                 <div className="space-y-8">
                     {isCampaign && (
                         (() => {
-                            // Helper to determine if we should hide the container completely (Hard Error)
-                            const isHardError = generationError && (
-                                generationError.includes("404") ||
-                                generationError.toLowerCase().includes("not found") ||
-                                generationError.toLowerCase().includes("not supported") ||
-                                generationError.toLowerCase().includes("permission")
-                            );
-
-                            if (isHardError) return null;
+                            // Helper function to get fallback image based on grade
+                            const getFallbackImage = (grade: string): string => {
+                                if (grade === 'S' || grade === 'A') {
+                                    return `${import.meta.env.BASE_URL}assets/epilogue_grade_s.png`;
+                                } else if (grade === 'B' || grade === 'C') {
+                                    return `${import.meta.env.BASE_URL}assets/epilogue_grade_bc.png`;
+                                } else { // D or F
+                                    return `${import.meta.env.BASE_URL}assets/epilogue_grade_df.png`;
+                                }
+                            };
 
                             return (
                                 <div className="relative aspect-video w-full rounded border-4 border-[#2c1810] shadow-xl bg-black/10 flex items-center justify-center overflow-hidden group">
@@ -233,46 +234,68 @@ export const EpilogueView: React.FC = () => {
                                                 const parent = e.currentTarget.parentElement;
                                                 if (parent) {
                                                     parent.innerHTML = `
-                                                        <div class="text-center opacity-50 p-4 flex flex-col items-center">
-                                                            <div class="text-4xl mb-2">🖼️</div>
-                                                            <div class="text-sm font-fantasy">Illustrations are disabled in Demo Mode</div>
-                                                        </div>
-                                                    `;
+                                                    <div class="text-center opacity-50 p-4 flex flex-col items-center">
+                                                        <div class="text-4xl mb-2">🖼️</div>
+                                                        <div class="text-sm font-fantasy">Illustrations are disabled in Demo Mode</div>
+                                                    </div>
+                                                `;
                                                 }
                                             }}
                                         />
                                     ) : (
-                                        <div className="text-center opacity-50 p-4 flex flex-col items-center gap-2">
-                                            <div className="text-4xl mb-2">🎨</div>
-                                            <div className="text-sm font-fantasy text-red-800">{generationError ? "Connection Unstable" : t.paintingIllustration}</div>
-                                            {isCampaign && settings.apiKey && (
-                                                <FantasyButton
-                                                    onClick={() => {
-                                                        setIsGeneratingImg(true);
-                                                        setGenerationError(null);
-                                                        generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished")
-                                                            .then(url => {
-                                                                setGameState(prev => ({ ...prev, illustrationUrl: url }));
-                                                                setIsGeneratingImg(false);
-                                                            })
-                                                            .catch(e => {
-                                                                console.error(e);
-                                                                setGenerationError(e.message || "Error");
-                                                                setIsGeneratingImg(false);
-                                                            });
-                                                    }}
-                                                    className="text-xs"
-                                                >
-                                                    {generationError ? "Retry Painting" : "Paint Scene"}
-                                                </FantasyButton>
-                                            )}
+                                        // AI generation failed or not attempted - show fallback image based on grade
+                                        <img
+                                            src={getFallbackImage(grade)}
+                                            alt={`Mission Result: ${grade}`}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                // If fallback image also fails to load, show retry UI
+                                                e.currentTarget.style.display = 'none';
+                                                const parent = e.currentTarget.parentElement;
+                                                if (parent) {
+                                                    const retryButton = isCampaign && settings.apiKey
+                                                        ? `<button onclick="window.location.reload()" class="mt-2 px-4 py-2 bg-[#8a1c1c] text-[#f3e5ab] rounded font-fantasy text-sm hover:bg-[#6a0c0c]">Retry AI Generation</button>`
+                                                        : '';
+                                                    parent.innerHTML = `
+                                                    <div class="text-center opacity-50 p-4 flex flex-col items-center gap-2">
+                                                        <div class="text-4xl mb-2">🎨</div>
+                                                        <div class="text-sm font-fantasy text-red-800">Image unavailable</div>
+                                                        ${retryButton}
+                                                    </div>
+                                                `;
+                                                }
+                                            }}
+                                        />
+                                    )}
+
+                                    {/* Overlay retry button for AI generation when fallback is showing */}
+                                    {!isGeneratingImg && !illustrationUrl && !isDemo && isCampaign && settings.apiKey && (
+                                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button
+                                                onClick={() => {
+                                                    setIsGeneratingImg(true);
+                                                    setGenerationError(null);
+                                                    generateEndingIllustration(settings.apiKey, feedback?.outcome || "Mission finished")
+                                                        .then(url => {
+                                                            setGameState(prev => ({ ...prev, illustrationUrl: url }));
+                                                            setIsGeneratingImg(false);
+                                                        })
+                                                        .catch(e => {
+                                                            console.error(e);
+                                                            setGenerationError(e.message || "Error");
+                                                            setIsGeneratingImg(false);
+                                                        });
+                                                }}
+                                                className="px-6 py-3 bg-[#8a1c1c] text-[#f3e5ab] rounded-lg font-fantasy text-sm hover:bg-[#6a0c0c] shadow-lg border-2 border-[#f3e5ab]/50 transition-all active:scale-95"
+                                            >
+                                                🎨 {t.paintingIllustration || "Generate AI Illustration"}
+                                            </button>
                                         </div>
                                     )}
                                 </div>
                             );
                         })()
                     )}
-
                     <div className={`grid grid-cols-1 ${isCampaign ? 'md:grid-cols-2' : ''} gap-6`}>
                         {feedback?.outcome && (
                             <div className="p-5 bg-white/40 rounded border border-black/10">
