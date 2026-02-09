@@ -1,8 +1,6 @@
 <div align="center">
 
 <!-- 保留原有的 Banner 或自己設計新的 -->
-<img width="1200" height="475" alt="Die Boten-Gilde Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-
 # Die Boten-Gilde (信使公會)
 
 **在歷史冒險中學習德語 | Learn German Through Historical Adventures**
